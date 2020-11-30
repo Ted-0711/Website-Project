@@ -2,23 +2,9 @@
 {% block content %}
 <div class="card fat">
 	<div class="card-body">
-		<h4 class="card-title">Register</h4>
+		<h4 class="card-title">Login</h4>
 		<form method="POST" class="my-login-validation" novalidate="">
 			{{ form.csrf_token }}
-			<div class="form-group">
-				{{ form.name.label }}
-				{% if form.name.errors %}
-					{{ form.name(class='form-control is-invalid') }}
-					{% for error in form.name.errors %}
-						<div class="invalid-feedback">
-							{{ error }}
-						</div>
-					{% endfor %}
-				{% else %}
-					{{ form.name(class='form-control') }}
-				{% endif %}
-			</div>
-
 			<div class="form-group">
 				{{ form.email.label }}
 				{% if form.email.errors %}
@@ -28,18 +14,22 @@
 							{{ error }}
 						</div>
 					{% endfor %}
-				{% elif emailRepeatError %}
+				{% elif noEmail %}
 					{{ form.email(class='form-control is-invalid') }}
-						<div class="invalid-feedback">
-							Repeated E-Mail Address
-						</div>
+					<div class="invalid-feedback">
+						E-Mail Address not found
+					</div>
 				{% else %}
 					{{ form.email(class='form-control') }}
 				{% endif %}
 			</div>
 
 			<div class="form-group">
-				{{ form.password.label }}
+				<label for="password">Password
+					<a href="{{ url_for('forgot') }}" class="float-right">
+						Forgot Password?
+					</a>
+				</label>
 				{% if form.password.errors %}
 					{{ form.password(class='form-control is-invalid') }}
 					{% for error in form.password.errors %}
@@ -47,35 +37,31 @@
 							{{ error }}
 						</div>
 					{% endfor %}
+				{% elif incorrectPassword %}
+					{{ form.password(class='form-control is-invalid') }}
+					<div class="invalid-feedback">
+						Incorrect password
+					</div>
 				{% else %}
 					{{ form.password(class='form-control') }}
+					{{ incorrectPassword }}
 				{% endif %}
 			</div>
 
 			<div class="form-group">
 				<div class="custom-checkbox custom-control">
-					{% if form.agree.errors %}
-						{{ form.agree(class="custom-control-input is-invalid", required="") }}
-						<label for="agree" class="custom-control-label">I agree to the <a href="#">Terms and Conditions</a></label>
-						{% for error in form.agree.errors %}
-							<div class="invalid-feedback">
-								{{ error }}
-							</div>
-						{% endfor %}
-					{% else %}
-						{{ form.agree(class="custom-control-input", required="") }}
-						<label for="agree" class="custom-control-label">I agree to the <a href="{{ url_for('Terms_and_Conditions') }}">Terms and Conditions</a></label>
-					{% endif %}
+					<input type="checkbox" name="remember" id="remember" class="custom-control-input">
+					<label for="remember" class="custom-control-label">Remember Me</label>
 				</div>
 			</div>
 
 			<div class="form-group m-0">
 				<button type="submit" class="btn btn-primary btn-block">
-					Register
+					Login
 				</button>
 			</div>
 			<div class="mt-4 text-center">
-				Already have an account? <a href={{ url_for('login') }}>Login</a>
+				Don't have an account? <a href="{{ url_for('register') }}">Create One</a>
 			</div>
 		</form>
 	</div>

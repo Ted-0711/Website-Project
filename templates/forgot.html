@@ -4,17 +4,28 @@
 	<div class="card-body">
 		<h4 class="card-title">Forgot Password</h4>
 		<form method="POST" class="my-login-validation" novalidate="">
+			{{ form.csrf_token }}
 			<div class="form-group">
-				<label for="email">E-Mail Address</label>
-				<input id="email" type="email" class="form-control" name="email" value="" required autofocus>
-				<div class="invalid-feedback">
-					Email is invalid
-				</div>
+				{{ form.email.label }}
+				{% if form.email.errors %}
+					{{ form.email(class='form-control is-invalid') }}
+					{% for error in form.email.errors %}
+						<div class="invalid-feedback">
+							{{ error }}
+						</div>
+					{% endfor %}
+				{% elif noStudent %}
+					{{ form.email(class='form-control is-invalid') }}
+						<div class="invalid-feedback">
+							E-Mail Address not found
+						</div>
+				{% else %}
+					{{ form.email(class='form-control') }}
+				{% endif %}
 				<div class="form-text text-muted">
-					By clicking "Reset Password" we will send a password reset link
+					Remember your password? <a href="{{ url_for('login') }}">Login</a>
 				</div>
 			</div>
-
 			<div class="form-group m-0">
 				<button type="submit" class="btn btn-primary btn-block">
 					Reset Password
