@@ -77,7 +77,9 @@ class PickThing(db.Model):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return redirect(url_for('login'))
+    if 'logged_in' not in session:
+        return redirect(url_for('login'))
+    return render_template('index.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -100,14 +102,29 @@ def register():
 def login():
     """ 登录函数 """
     loginForm = LoginForm()
+    # if 'logged_in' in session:
+    #     return redirect(url_for('index'))
+    if request.method == 'GET' and 'login_user' in session:
+        loginForm.email.data = Student.query.filter_by(id=session['login_user']).first().emailAddress
+        if 'remember' in session:
+            loginForm.password.data = Student.query.filter_by(id=session['login_user']).first().password
+            loginForm.remember.data = True
     if loginForm.validate_on_submit():
         student = Student.query.filter_by(emailAddress=loginForm.email.data).first()
         if (student and student.password == loginForm.password.data):
-            return 'Surprise Mother Fucker'
+            session['logged_in'] = True
+            session['login_user'] = student.id
+            if (loginForm.remember.data):
+                session['remember'] = True
+            else:
+                checkRememberAndPop()
+            return redirect(url_for('index'))
         elif (not student):
+            checkRememberAndPop()
             app.logger.info('noEmail')
             return render_template('login.html', form=loginForm, noEmail=True)
         else:
+            checkRememberAndPop()
             return render_template('login.html', form=loginForm, incorrectPassword=True)
     return render_template('login.html', form=loginForm)
 
@@ -141,3 +158,19 @@ def reset(user_id):
 @app.route('/Terms and Conditions')
 def Terms_and_Conditions():
     return '<h1>!!!Surprise!!!</h1>'
+
+
+@app.route('/lost')
+def lost():
+    if request.method == 'POST':
+        app.logger.info(request.form.get("index2"))
+    return render_template('lost.html')
+
+
+@app.route('/found')
+def found():
+    return render_template('found.html')
+
+def checkRememberAndPop():
+    if 'remember' in session:
+        session.pop('remember')

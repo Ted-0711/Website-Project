@@ -2,7 +2,12 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, IntegerField, \
     TextAreaField, SubmitField, MultipleFileField
+from wtforms.widgets.core import PasswordInput
 from wtforms.validators import DataRequired, Length, ValidationError, Email, AnyOf
+
+
+class MyPasswordField(PasswordField):
+    widget = PasswordInput(hide_value=False)
 
 
 class RegisterForm(FlaskForm):
@@ -14,7 +19,7 @@ class RegisterForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     email = StringField('E-Mail Address', validators=[DataRequired(message=u'Email is required'), Email(message=u'Legal E-Mail Address is required')], render_kw={'class': 'form-control'})
-    password = PasswordField('Password', validators=[DataRequired(message=u'Password is required')], render_kw={'class': 'form-control'})
+    password = MyPasswordField('Password', validators=[DataRequired(message=u'Password is required')], render_kw={'class': 'form-control'})
     remember = BooleanField('Remember Me', render_kw={'class': 'custom-control-input'})
 
 

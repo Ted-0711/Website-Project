@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Found</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        .BMap_geolocationIconBackground {
+            display: none;
+        }
+
+        .BMap_stdMpZoom {
+            top: 50px !important
+        }
+    </style>
+    <script src="js/jquery-1.10.2.js"></script>
+    <script src="js/jquery-browser.js"></script>
+    <script src="js/jquery.imageView.js"></script>
+    <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=hjpHex4OdzQGBwiRpGYLmY0uHkNpKKxj"></script>
+    <script type="text/javascript"
+        src="http://api.map.baidu.com/library/AreaRestriction/1.2/src/AreaRestriction_min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <form>
+            <br>
+            <button type="button" class="btn-lg btn-block btn-default active" flaot:left disabled="disabled">Add
+                information of a found thing</button>
+            <br>
+            <span>
+                <label for="index1">Item Type:</label>
+            </span>
+            <select class="form-control" required autofocus>
+                <option id="default option" disabled selected style='display:none' selected='selected'>Please choose the
+                    item type</option>
+                <option>License</option>
+                <option>Digital device</option>
+                <option>Jewelry and Ornament</option>
+                <option>Cosmetics and Daily supplies</option>
+                <option>Clothes and Shoes</option>
+                <option>Books and Files</option>
+            </select>
+
+            <div class="form-group">
+                <label for="index2">Item Name:</label>
+                <input type="name" class="form-control" id="index2" placeholder="Please enter the item name" required
+                    autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="index3">Found Time:</label>
+                <input type="date" class="form-control" id="index3" placeholder="year/month/day" required autofocus>
+                <br>
+                <select class="form-control" required autofocus>
+                    <option id="default option" disabled selected style='display:none' selected='selected'>Please choose
+                        the time period</option>
+                    <option>Morning</option>
+                    <option>Noon</option>
+                    <option>Afternoon</option>
+                    <option>Evening</option>
+                    <option>Night</option>
+                    <option>I forgot</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="index5">Contact Person:</label>
+                <input type="name" required autofocus class="form-control" id="index5"
+                    placeholder="Please enter your name">
+            </div>
+            <div class="form-group">
+                <label for="email">E-mail Address:</label>
+                <input id="email" type="email" class="form-control" name="email"
+                    placeholder="Please enter your e-mail address" value="" required autofocus>
+                <div class="invalid-feedback">
+                    Email is invalid
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="index4">Found Location:</label>
+                <input type="place" id="place" disabled="disabled" class="form-control" id="index4"
+                    placeholder="Please click the lost location in the map">
+                <br>
+                <div id="imageView_container" class="container"
+                    style="overflow: hidden; position: relative;height: 600px;padding: 0px; margin-top:10px;width: 100%;">
+                    <div id="allmap" style="width: 100%; height: 100%; "></div>
+
+                </div>
+
+                <br>
+
+
+
+                <script type="text/javascript">
+                    // 百度地图API功能
+                    var map = new BMap.Map("allmap", {
+                        minZoom: 17.4,
+                        maxZoom: 20,
+                        enableMapClick: false
+                    }); // 创建Map实例
+                    map.centerAndZoom(new BMap.Point(121.220598, 31.293589), 18); // 初始化地图,设置中心点坐标和地图级别
+                    // 添加地图类型控件
+                    map.addControl(new BMap.NavigationControl({
+                        // 靠左上角位置
+                        anchor: BMAP_ANCHOR_TOP_LEFT,
+                        // LARGE类型
+                        type: BMAP_NAVIGATION_CONTROL_SMALL,
+                        // 启用显示定位
+                        enableGeolocation: true
+                    }));
+                    map.enableScrollWheelZoom(true);
+                    // 地图上显示点的数量
+                    var count = []
+                    // 创建地址解析器
+                    var geoc = new BMap.Geocoder();
+                    // 地图点击事件
+                    map.addEventListener('click', function (e) {
+                        if (count.length >= 1) {
+                            alert("您只能添加一个点！");
+                            return
+                        }
+                        var pt = e.point;
+                        // 添加点
+                        var marker = new BMap.Marker(new BMap.Point(pt.lng, pt.lat));
+                        map.addOverlay(marker);
+                        //根据点获取地址 
+                        geoc.getLocation(pt, function (rs) {
+                            console.log("---------")
+                            if (rs.surroundingPois.length > 0) {
+                                console.log("---2111------")
+                                if (rs.surroundingPois.length >= 2) {
+                                    count.push(rs.surroundingPois[1].title)
+                                    console.log(count.join(","))
+                                    $("#place").val(count.join(","))
+                                    return
+                                }
+                                count.push(rs.surroundingPois[0].title)
+                                console.log(count.join(","))
+                                $("#place").val(count.join(","))
+                            }
+                        })
+                    });
+
+
+                    extend()
+                    // 显示地图显示范围
+                    function extend() {
+                        var extent = new Object();
+                        extent.minX = "121.220";
+                        extent.maxX = "121.224";
+                        extent.minY = "31.28";
+                        extent.maxY = "31.2998";
+                        map.addEventListener("dragging", function (type, target) {
+                            console.log("1", type, target)
+                            if (Number(extent.minY) > map.getBounds().getSouthWest().lat) {
+                                map.centerAndZoom(new BMap.Point(121.220598, 31.293589), 18);
+                            };
+                            console.log("2", Number(extent.maxY), map.getBounds().getNorthEast().lat)
+                            if (Number(extent.maxY) < map.getBounds().getNorthEast().lat) {
+
+                                map.centerAndZoom(new BMap.Point(121.220598, 31.293589), 18);
+                            }
+                            console.log("3", Number(type.point.lng), extent.minX)
+                            if (type.point.lng <= extent.minX) {
+                                map.centerAndZoom(new BMap.Point(121.220598, 31.293589), 18);
+                            }
+                            console.log("4", Number(type.point.lng), Number(extent.maxX), map.getBounds()
+                                .getNorthEast().lat)
+                            if (type.point.lng > Number(extent.maxX)) {
+                                map.centerAndZoom(new BMap.Point(121.220598, 31.293589), 18);
+                            }
+                        });
+                    }
+
+                    $(document).on("click", ".remove", function () {
+                        map.clearOverlays()
+                        $("#place").val("")
+                    })          	
+					function clearOverlays(){
+						map.clearOverlays()
+					}
+                </script>
+            </div>
+
+            <div class="form-group">
+                <label for="index7">Complement (optional):</label>
+                <textarea class="form-control" rows="5"
+                    placeholder="Please enter additional information here"></textarea>
+            </div>
+            <br />
+            <a href="#" class="btn btn-info btn-lg btn-block" role="button">Submit</a>
+            <button class="btn btn-info btn-lg btn-block" onclick="clearOverlays()">Clear All</button>
+            <br>
+            <br>
+        </form>
+    </div>
+</body>
+
+</html>

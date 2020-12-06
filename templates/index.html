@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Kodinger">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>主界面</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="../static/css/my-index.css">
+</head>
+
+<body class="my-login-page">
+	<div class="container">
+		<div align="right">
+			<div>
+				<button type="button" class="btn btn-info">
+					Re login
+				</button>
+				<a href="{{ url_for('lost') }}" class="btn btn-info" role="button">Lost</a>
+<!--				<button type="button" class="btn btn-info" href="{{ url_for('lost') }}">-->
+<!--				   Lost-->
+<!--				</button>-->
+				<a href="{{ url_for('found') }}" class="btn btn-info" role="button">Found</a>
+<!--				<button type="button" class="btn btn-info" href="{{ url_for('found') }}">-->
+<!--					Picked up-->
+<!--				</button>-->
+			</div>
+		</div>
+	</div>
+	<section class="h-100">
+		<div class="container h-100">
+			<div class="row justify-content-md-center h-100">
+				<div class="card-wrapper">
+					<div class="brand">
+						<a href="personal-information.html" target="_blank">
+							<img src="../static/img/logo.jpg" alt="logo">
+						</a>
+					</div>
+					<div class="card fat">
+						<div class="card-body">
+							<h4 class="card-title">Picking up records</h4>
+						</div>
+						<table class="table">
+							<thead class="text-center">
+								<tr>
+									<th>Item</th>
+									<th>Type</th>
+									<th>Time and place</th>
+								</tr>
+							</thead>
+							<tbody class="text-center">
+								<tr>
+									<td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente tempora sed aperiam inventore voluptas nemo, iure fugiat harum mollitia, ab et optio, quae voluptate a quos consequatur sunt officiis explicabo.</td>
+									<td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum, sequi! Atque iure laborum possimus nulla ea officia, consequuntur maiores at, voluptates quidem id aspernatur repudiandae laudantium, ducimus maxime! Blanditiis, a!</td>
+									<td>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sint, voluptate? Dolorem maxime facilis nostrum voluptate. Doloribus voluptas autem possimus ad dolorem sequi corrupti, facere repellendus odio dolores suscipit incidunt illum!</td>
+								</tr>
+								<tr>
+									<td>Lorem ipsum dolor sit, amet consectetur adipisicing elit. In velit doloremque facere ipsum provident explicabo recusandae blanditiis esse, non ut vel quo repudiandae! Ad ratione eligendi rem maiores nulla? Aspernatur!</td>
+									<td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus tempore inventore consequatur at iste libero explicabo numquam officia assumenda. Deleniti doloribus iste accusantium iure! Qui exercitationem reprehenderit amet consequatur fugit.</td>
+									<td>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Harum commodi delectus temporibus quaerat, eveniet ratione! Earum, dolor nostrum blanditiis neque quasi voluptates nobis aliquid dolore velit. Placeat laboriosam voluptates doloremque?</td>
+								</tr>
+								<tr>
+									<td>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam, debitis culpa doloremque quo quam nam modi. Quisquam sequi, non voluptatum fuga facilis rem consequatur dolores beatae? Corporis, amet? Laboriosam, vero.</td>
+									<td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid a obcaecati commodi numquam voluptatem, sit fugiat voluptatum voluptates, excepturi aperiam tempora reiciendis expedita eligendi esse? Voluptatem cum soluta officiis nobis!</td>
+									<td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi adipisci minus sequi culpa at ratione cupiditate vitae consequuntur! Fugit ut eveniet minus veritatis quasi tenetur odio repudiandae ab voluptas modi!</td>
+								</tr>
+							</tbody>
+						</table>
+						<form class="text-center" role="form" method="POST" novalidate="">
+							<table class="form-group">
+								<tbody>
+									<span>
+										<button type="submit" class="btn btn-primary btn-lg">
+											Your lost record
+										</button>
+									</span>
+									<span>
+										 <button type="submit" class="btn btn-primary btn-lg">
+											Your pickup record
+										 </button>
+									 </span>
+								</tbody>
+							</table>
+						</form>
+					</div>
+					<div class="footer">
+						Copyright &copy; 2020 &mdash; Tongji University 
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<script src="js/my-login.js"></script>
+</body>
+</html>
