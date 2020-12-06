@@ -10,6 +10,11 @@
 </head>
 
 <body class="my-login-page">
+	{% for message in get_flashed_messages() %}
+	<script>
+		alert("{{ message }}")
+	</script>
+	{% endfor %}
 	<div class="container">
 		<div align="right">
 			<div>

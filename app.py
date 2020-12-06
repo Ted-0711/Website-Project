@@ -3,8 +3,9 @@ import os, uuid, click, sys
 
 
 from flask import Flask, render_template, flash, redirect, url_for, request, send_from_directory, session
-from forms import RegisterForm, LoginForm, ForgotForm, ResetForm
+from forms import RegisterForm, LoginForm, ForgotForm, ResetForm, LostForm
 from flask_sqlalchemy import SQLAlchemy
+import datetime
 
 
 app = Flask(__name__)
@@ -57,8 +58,12 @@ class Student(db.Model):
 
 class LostThing(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String(10))
+    type = db.Column(db.Integer)
+    lostDate = db.Column(db.Date)
+    contactPerson = db.Column(db.String(20))
+    contactEmail = db.Column(db.String(40))
     location = db.Column(db.Integer)
+    complement = db.Column(db.String(100))
     lostStudent_id = db.Column(db.Integer, db.ForeignKey('student.id'))
 
     def __repr__(self):
@@ -67,12 +72,21 @@ class LostThing(db.Model):
 
 class PickThing(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String(10))
+    type = db.Column(db.Integer)
+    pickDate = db.Column(db.Date)
+    contactPerson = db.Column(db.String(20))
+    contactEmail = db.Column(db.String(40))
     location = db.Column(db.Integer)
+    complement = db.Column(db.String(100))
     pickStudent_id = db.Column(db.Integer, db.ForeignKey('student.id'))
 
     def __repr__(self):
         return '<PickThing %r>' % self.id
+
+
+@app.route('/welcome')
+def welcome():
+    return render_template('welcome.html')
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -104,7 +118,7 @@ def login():
     loginForm = LoginForm()
     # if 'logged_in' in session:
     #     return redirect(url_for('index'))
-    if request.method == 'GET' and 'login_user' in session:
+    if request.method == 'GET' and 'login_user' in session and Student.query.filter_by(id=session['login_user']):
         loginForm.email.data = Student.query.filter_by(id=session['login_user']).first().emailAddress
         if 'remember' in session:
             loginForm.password.data = Student.query.filter_by(id=session['login_user']).first().password
@@ -118,6 +132,7 @@ def login():
                 session['remember'] = True
             else:
                 checkRememberAndPop()
+            flash('Successfully logged in')
             return redirect(url_for('index'))
         elif (not student):
             checkRememberAndPop()
@@ -160,11 +175,12 @@ def Terms_and_Conditions():
     return '<h1>!!!Surprise!!!</h1>'
 
 
-@app.route('/lost')
+@app.route('/lost', methods=['GET', 'POST'])
 def lost():
-    if request.method == 'POST':
-        app.logger.info(request.form.get("index2"))
-    return render_template('lost.html')
+    lostForm = LostForm()
+    if lostForm.validate_on_submit():
+        return redirect(url_for('login'))
+    return render_template('lost.html', form=lostForm)
 
 
 @app.route('/found')

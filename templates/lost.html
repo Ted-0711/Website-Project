@@ -30,59 +30,46 @@
 
 <body>
     <div class="container">
-        <form>
+        <form method="POST">
+            {{ form.csrf_token }}
             <br>
             <button type="button" class="btn-lg btn-block btn-default active" flaot:left disabled="disabled">Add
                 information of a
                 lost thing</button>
             <br>
             <span>
-                <label for="index1">Item Type:</label>
+                {{ form.itemType.label }}
             </span>
-            <select class="form-control">
-                <option id="default option" disabled selected style='display:none' selected='selected'>Please choose the
-                    item type</option>
-                <option>License</option>
-                <option>Digital device</option>
-                <option>Jewelry and Ornament</option>
-                <option>Cosmetics and Daily supplies</option>
-                <option>Clothes and Shoes</option>
-                <option>Books and Files</option>
-            </select>
-
+            {{ form.itemType }}
+            <br>
             <div class="form-group">
-                <label for="index2">Item Name:</label>
-                <input type="name" class="form-control" id="index2" placeholder="Please enter the item name" required
-                    autofocus>
-            </div>
-
-            <div class="form-group">
-                <label for="index3">Lost Time:</label>
-                <input type="date" class="form-control" id="index3" placeholder="year/month/day" required autofocus>
-                <br>
-                <select class="form-control" required autofocus>
-                    <option id="default option" disabled selected style='display:none' selected='selected'>Please choose
-                        the time period</option>
-                    <option>Morning</option>
-                    <option>Noon</option>
-                    <option>Afternoon</option>
-                    <option>Evening</option>
-                    <option>Night</option>
-                    <option>I forgot</option>
-                </select>
+                {{ form.itemName.label }}
+                {{ form.itemName }}
             </div>
             <div class="form-group">
-                <label for="index5">Contact Person:</label>
-                <input type="name" required autofocus class="form-control" id="index5"
-                    placeholder="Please enter your name">
+                <label for="lostDate">Lost Date</label>
+                <input type="date" class="form-control" id="lostDate" placeholder="year/month/day">
             </div>
             <div class="form-group">
-                <label for="email">E-mail Address:</label>
-                <input id="email" type="email" class="form-control" name="email"
-                    placeholder="Please enter your e-mail address" value="" required autofocus>
-                <div class="invalid-feedback">
-                    Email is invalid
-                </div>
+                {{ form.contactPerson.label }}
+                {{ form.contactPerson }}
+            </div>
+            <div class="form-group">
+				{{ form.emailAddress.label }}
+				{% if form.emailAddress.errors %}
+					{{ form.emailAddress(class='form-control is-invalid') }}
+					{% for error in form.emailAddress.errors %}
+						<div class="invalid-feedback">
+							{{ error }}
+						</div>
+					{% endfor %}
+				{% else %}
+					{{ form.emailAddress(class='form-control') }}
+				{% endif %}
+			</div>
+            <div class="form-group">
+                {{ form.emailAddress.label }}
+                {{ form.emailAddress }}
             </div>
 
             <div class="form-group">
@@ -192,12 +179,17 @@
             </div>
 
             <div class="form-group">
-                <label for="index7">Complement (optional):</label>
-                <textarea class="form-control" rows="5"
-                    placeholder="Please enter additional information here"></textarea>
+                {{ form.complement.label }}
+                {{ form.complement }}
             </div>
             <br />
-            <a href="#" class="btn btn-info btn-lg btn-block" role="button">Submit</a>
+            <div class="form-group m-0">
+				<button type="submit" class="btn btn-info btn-lg btn-block" role="'button">
+					Submit
+				</button>
+			</div>
+            <br>
+<!--            <a href="#" class="btn btn-info btn-lg btn-block" role="button">Submit</a>-->
             <button class="btn btn-info btn-lg btn-block" onclick="clearOverlays()">Clear All</button>
             <br>
             <br>
