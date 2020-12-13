@@ -1,104 +1,445 @@
 <!DOCTYPE html>
-<html lang="en">
 <head>
+	<style type="text/css">
+		body{
+			background-image:url(../static/img/bg.jpg);
+			background-size: cover;
+			background-attachment: fixed;
+		}
+	</style>
 	<meta charset="utf-8">
-	<meta name="author" content="Kodinger">
-	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<title>主界面</title>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-	<link rel="stylesheet" type="text/css" href="../static/css/my-index.css">
-</head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Rectangle Mobile Template</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../static/css/normalize.css">
+	<link rel="stylesheet" href="../static/css/font-awesome.css">
+	<link rel="stylesheet" href="../static/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../static/css/templatemo-style.css">
+	<script src="../static/js/vendor/modernizr-2.6.2.min.js"></script>
+<style>
+	#imageView_container {
+		border: 1px solid #00000034;
+		border-radius: 1%;
+	}
 
-<body class="my-login-page">
-	{% for message in get_flashed_messages() %}
-	<script>
-		alert("{{ message }}")
-	</script>
-	{% endfor %}
+	@keyframes suo {
+		0% {}
+
+		70% {
+			width: 15px;
+			height: 15px;
+			opacity: 1;
+		}
+
+		100% {
+			width: 35px;
+			height: 35px;
+			opacity: 0;
+		}
+	}
+
+
+	.campusmap {
+		position: relative;
+		height: 900px;
+		width: 900px;
+		margin: auto;
+		background: transparent no-repeat center;
+	}
+
+	.building-F {
+		position: absolute;
+		right: 243px;
+		top: 228px;
+	}
+
+	.building-G {
+		position: absolute;
+		right: 343px;
+		top: 328px;
+	}
+
+
+	/* 三重动态光圈 */
+	/* 打点 */
+	.dotted_red {
+		width: 6px;
+		height: 6px;
+		background-color: rgba(248, 84, 78, 0.7);
+		border-radius: 50%;
+	}
+
+
+	.shine1_red {
+		animation: suo 1s linear 0s infinite;
+		position: absolute;
+		width: 6px;
+		height: 6px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		border-radius: 50%;
+		box-shadow: 0 0 15px rgb(231, 126, 126);
+	}
+
+	.shine2_red {
+		animation: suo 1s linear 0.6s infinite;
+		position: absolute;
+		width: 6px;
+		height: 6px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		border-radius: 50%;
+		box-shadow: 0 0 15px rgb(231, 126, 126);
+
+	}
+
+	.shine3_red {
+		animation: suo 1s linear 1.2s infinite;
+		position: absolute;
+		width: 6px;
+		height: 6px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		border-radius: 50%;
+		box-shadow: 0 0 15px rgb(231, 126, 126);
+
+	}
+</style>
+</head>
+<body>
+
+<!--<div class="site-bg"></div>-->
+<!--<div class="site-bg-overlay"></div>-->
+
+<!-- TOP HEADER -->
+<div class="top-header">
 	<div class="container">
-		<div align="right">
-			<div>
-				<button type="button" class="btn btn-info">
-					Re login
-				</button>
-				<a href="{{ url_for('lost') }}" class="btn btn-info" role="button">Lost</a>
-<!--				<button type="button" class="btn btn-info" href="{{ url_for('lost') }}">-->
-<!--				   Lost-->
-<!--				</button>-->
-				<a href="{{ url_for('found') }}" class="btn btn-info" role="button">Found</a>
-<!--				<button type="button" class="btn btn-info" href="{{ url_for('found') }}">-->
-<!--					Picked up-->
-<!--				</button>-->
+		<div class="row">
+			<div class="col-md-6 col-sm-6 col-xs-12">
 			</div>
-		</div>
-	</div>
-	<section class="h-100">
-		<div class="container h-100">
-			<div class="row justify-content-md-center h-100">
-				<div class="card-wrapper">
-					<div class="brand">
-						<a href="personal-information.html" target="_blank">
-							<img src="../static/img/logo.jpg" alt="logo">
-						</a>
-					</div>
-					<div class="card fat">
-						<div class="card-body">
-							<h4 class="card-title">Picking up records</h4>
-						</div>
-						<table class="table">
-							<thead class="text-center">
-								<tr>
-									<th>Item</th>
-									<th>Type</th>
-									<th>Time and place</th>
-								</tr>
-							</thead>
-							<tbody class="text-center">
-								<tr>
-									<td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente tempora sed aperiam inventore voluptas nemo, iure fugiat harum mollitia, ab et optio, quae voluptate a quos consequatur sunt officiis explicabo.</td>
-									<td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum, sequi! Atque iure laborum possimus nulla ea officia, consequuntur maiores at, voluptates quidem id aspernatur repudiandae laudantium, ducimus maxime! Blanditiis, a!</td>
-									<td>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sint, voluptate? Dolorem maxime facilis nostrum voluptate. Doloribus voluptas autem possimus ad dolorem sequi corrupti, facere repellendus odio dolores suscipit incidunt illum!</td>
-								</tr>
-								<tr>
-									<td>Lorem ipsum dolor sit, amet consectetur adipisicing elit. In velit doloremque facere ipsum provident explicabo recusandae blanditiis esse, non ut vel quo repudiandae! Ad ratione eligendi rem maiores nulla? Aspernatur!</td>
-									<td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus tempore inventore consequatur at iste libero explicabo numquam officia assumenda. Deleniti doloribus iste accusantium iure! Qui exercitationem reprehenderit amet consequatur fugit.</td>
-									<td>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Harum commodi delectus temporibus quaerat, eveniet ratione! Earum, dolor nostrum blanditiis neque quasi voluptates nobis aliquid dolore velit. Placeat laboriosam voluptates doloremque?</td>
-								</tr>
-								<tr>
-									<td>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam, debitis culpa doloremque quo quam nam modi. Quisquam sequi, non voluptatum fuga facilis rem consequatur dolores beatae? Corporis, amet? Laboriosam, vero.</td>
-									<td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid a obcaecati commodi numquam voluptatem, sit fugiat voluptatum voluptates, excepturi aperiam tempora reiciendis expedita eligendi esse? Voluptatem cum soluta officiis nobis!</td>
-									<td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi adipisci minus sequi culpa at ratione cupiditate vitae consequuntur! Fugit ut eveniet minus veritatis quasi tenetur odio repudiandae ab voluptas modi!</td>
-								</tr>
-							</tbody>
-						</table>
-						<form class="text-center" role="form" method="POST" novalidate="">
-							<table class="form-group">
-								<tbody>
-									<span>
-										<button type="submit" class="btn btn-primary btn-lg">
-											Your lost record
-										</button>
-									</span>
-									<span>
-										 <button type="submit" class="btn btn-primary btn-lg">
-											Your pickup record
-										 </button>
-									 </span>
-								</tbody>
-							</table>
-						</form>
-					</div>
-					<div class="footer">
-						Copyright &copy; 2020 &mdash; Tongji University 
-					</div>
+			<div class="col-md-6 col-sm-6 col-xs-12">
+				<div class="social-icons">
+					<ul>
+						<li><a href="{{ url_for('lost') }}" class="fa fa-plus "> Add Lost</a></li>
+						<li><a href="{{ url_for('found') }}" class="fa fa-plus "> Add Found</a></li>
+						<li><a href="#" class="fa fa-bell "> Notice</a></li>
+						<li><a href="{{ url_for('personal_page') }}" class="fa fa-user "> Person</a></li>
+					</ul>
 				</div>
 			</div>
 		</div>
-	</section>
+	</div>
+</div> <!-- .top-header -->
 
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-	<script src="js/my-login.js"></script>
+
+<div class="visible-xs visible-sm responsive-menu">
+	<a href="#" class="toggle-menu">
+		<i class="fa fa-bars"></i> Show Menu
+	</a>
+	<div class="show-menu">
+		<ul class="main-menu">
+			<li>
+				<a class="show-1 active homebutton" href="#"><i class="fa fa-home"></i>Home</a>
+			</li>
+			<li>
+				<a class="show-2 aboutbutton" href="#"><i class="fa fa-map"></i>Hotspot map</a>
+			</li>
+			<li>
+				<a class="show-3 projectbutton" href="#"><i class="fa fa-id-card"></i>Lost Things</a>
+			</li>
+			<li>
+				<a class="show-5 contactbutton" href="#"><i class="fa fa-question"></i>Picked Things</a>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<div class="container" id="page-content">
+	<div class="row">
+
+		<div class="col-md-9 col-sm-12 content-holder">
+			<!-- CONTENT -->
+			<div id="menu-container">
+
+				<div class="logo-holder logo-top-margin">
+					<a href="#" class="site-brand"><img src="images/logo.png" alt=""></a>
+				</div>
+
+
+				<div id="menu-1" class="homepage home-section text-center">
+					<div class="welcome-text">
+						<h2>Hello <strong>{{ student.name }}</strong>, Welcome to <strong>Lost & Found</strong></h2>
+						<h2>Your Contact Email: <strong>{{ student.emailAddress }}</strong></h2>
+						<p> You can report the loss and look for your lost property here. Or return something you found to its owner.</p>
+					</div>
+				</div>
+
+				<div id="menu-2" class="content about-section">
+					<div class="box-content">
+						<div class="row">
+							<div class="col-md-12 col-sm-6 col-xs-12">
+								<div class="project-item">
+									<img src="../static/img/map.jpg" alt="">
+									{% for lost_thing in all_lost_things %}
+										{% for lost_pixelcoor in convert_location_to_xy(lost_thing.location) %}
+											<div style="position: absolute; right: {{ int(lost_pixelcoor[0]) }}px; top: {{ int(lost_pixelcoor[1]) }}px;">
+												<div class="dotted_red" click></div>
+												<div class="shine1_red"></div>
+												<div class="shine2_red"></div>
+												<div class="shine3_red"></div>
+											</div>
+										{% endfor %}
+									{% endfor %}
+									<div class="project-hover">
+										<h4>Do you wanna add a hotspot?</h4>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+<!--					<div class="row">-->
+<!--						<div class="col-md-8 col-sm-8">-->
+<!--							<div class="box-content profile">-->
+<!--								<h3 class="widget-title">Learn about us</h3>-->
+<!--								<div class="profile-thumb">-->
+<!--									<img src="images/8.jpg" alt="">-->
+<!--								</div>-->
+<!--								<div class="profile-content">-->
+<!--									<h5 class="profile-name">Linda Beauty</h5>-->
+<!--									<span class="profile-role">Creative Director</span>-->
+<!--									<p>Most of the images are from <a rel="nofollow" href="#">Unsplash.com</a> website. Curabitur auctor justo pretium purus varius sagittis. Aliquam porttitor leo sapien, hendrerit dapibus lorem.<br><br>-->
+<!--									Change icons by <a rel="nofollow" href="#/font-awesome-icon-world-map/">Font Awesome</a> (version 4). Example: <span class="blue">&lt;i class=&quot;fa fa-refresh&quot;&gt;&lt;/i&gt;</span></p>-->
+<!--								</div>-->
+<!--							</div>-->
+<!--						</div>-->
+<!--						<div class="col-md-4 col-sm-4">-->
+<!--							<div class="box-content">-->
+<!--								<h3 class="widget-title">Background</h3>-->
+<!--								<p>Vestibulum pellentesque ante sit amet tristique hendrerit. Sed consequat, nunc lobortis faucibus pretium, enim nibh blandit est, nec sollicitudin est quam a neque. Aenean eget malesuada justo.</p>-->
+<!--								<div class="about-social">-->
+<!--									<ul>-->
+<!--										<li><a href="#" class="fa fa-facebook"></a></li>-->
+<!--										<li><a href="#" class="fa fa-twitter"></a></li>-->
+<!--										<li><a href="#" class="fa fa-linkedin"></a></li>-->
+<!--										<li><a href="#" class="fa fa-dribbble"></a></li>-->
+<!--									</ul>-->
+<!--								</div>-->
+<!--							</div>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--					<div class="row">-->
+<!--						<div class="col-md-5 col-sm-5">-->
+<!--							<div class="box-content">-->
+<!--								<h3 class="widget-title">Our Studio</h3>-->
+<!--								<div class="project-item">-->
+<!--									<img src="images/7.jpg" alt="">-->
+<!--									<div class="project-hover">-->
+<!--										<h4>Great Nature Capture</h4>-->
+<!--									</div>-->
+<!--								</div>-->
+<!--							</div>-->
+<!--						</div>-->
+<!--						<div class="col-md-7 col-sm-7">-->
+<!--							<div class="box-content">-->
+<!--								<h3 class="widget-title">Our Technical Skills</h3>-->
+<!--								<ul class="progess-bars">-->
+<!--									<li>-->
+<!--										<span>HTML CSS 80%</span>-->
+<!--										<div class="progress">-->
+<!--											<div class="progress-bar" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%;"></div>-->
+<!--										</div>-->
+<!--									</li>-->
+<!--									<li>-->
+<!--										<span>PHOTOSHOP 95%</span>-->
+<!--										<div class="progress">-->
+<!--											<div class="progress-bar" role="progressbar" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100" style="width: 95%;"></div>-->
+<!--										</div>-->
+<!--									</li>-->
+<!--									<li>-->
+<!--										<span>WORDPRESS 70%</span>-->
+<!--										<div class="progress">-->
+<!--											<div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width: 70%;"></div>-->
+<!--										</div>-->
+<!--									</li>-->
+<!--									<li>-->
+<!--										<span>PHP mySQL 50%</span>-->
+<!--										<div class="progress">-->
+<!--											<div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;"></div>-->
+<!--										</div>-->
+<!--									</li>-->
+<!--								</ul>-->
+<!--							</div>-->
+<!--						</div>-->
+<!--					</div>-->
+				</div>
+
+				{% for i in range(pages) %}
+				<div id="menu-3" class="content gallery-section-{{ i+1 }}">
+					<div class="row">
+						<div class="col-md-12 col-sm-12">
+							<div class="box-content">
+								<h3 class="widget-title">Lost Things</h3>
+								<div class="box-content profile">
+									<!-- Lost table -->
+									<table class="table">
+										<thead class="text-center">
+											<tr>
+												<th>Item Type</th>
+												<th>Item Name</th>
+												<th>Lost Location</th>
+												<th>Contact Email</th>
+											</tr>
+										</thead>
+										<tbody class="text-center">
+											{% for lost_thing in all_lost_things[i*num_per_page:(i+1)*num_per_page] %}
+											<tr>
+												<td> {{ convert_type(lost_thing.type) }} </td>
+												<td> {{ lost_thing.name }} </td>
+												<td> {{ convert_location_to_txt(lost_thing.location) }} </td>
+												<td> {{ lost_thing.contactEmail }} </td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table><!-- lost table -->
+								</div>
+								<div class="project-pages">
+									<ul class="page-menu-lost">
+										{% for j in range(pages) %}
+											<li><a class="page-{{ j+1 }}" href="#">{{ j+1 }}</a></li>
+										{% endfor %}
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+
+				<div id="menu-4" class="content contact-section">
+					<div class="row">
+						<div class="col-md-12 col-sm-12">
+							<div class="box-content">
+								<h3 class="widget-title">Picked Things</h3>
+								<div class="box-content profile">
+									<!-- Lost table -->
+									<table class="table">
+										<thead class="text-center">
+											<tr>
+												<th>Item Type</th>
+												<th>Item Name</th>
+												<th>Lost Location</th>
+												<th>Contact Address</th>
+											</tr>
+										</thead>
+										<tbody class="text-center">
+											{% for pick_thing in all_pick_things %}
+											<tr>
+												<td> {{ convert_type(pick_thing.type) }} </td>
+												<td> {{ pick_thing.name }} </td>
+												<td> {{ convert_location_to_txt(pick_thing.location) }} </td>
+												<td> {{ pick_thing.contactEmail }} </td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table><!-- lost table -->
+								</div>
+								<div class="project-pages">
+									<ul>
+										<li><a href="#">1</a></li>
+										<li><a href="#">2</a></li>
+										<li><a href="#">3</a></li>
+										<li><a href="#">...</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+<!--					<div class="row">-->
+<!--						<div class="col-md-8 col-sm-8">-->
+<!--							<div class="box-content">-->
+<!--								<h3 class="widget-title">Send Us A Message</h3>-->
+<!--								<form class="contact-form">-->
+<!--									<fieldset>-->
+<!--										<input type="text" class="name" id="name" placeholder="Name...">-->
+<!--									</fieldset>-->
+<!--									<fieldset>-->
+<!--										<input type="email" class="email" id="email" placeholder="Email...">-->
+<!--									</fieldset>-->
+<!--									<fieldset>-->
+<!--										<input type="text" class="subject" id="subject" placeholder="Subject...">-->
+<!--									</fieldset>-->
+<!--									<fieldset>-->
+<!--										<textarea name="message" id="message" cols="30" rows="4" placeholder="Message.."></textarea>-->
+<!--									</fieldset>-->
+<!--									<fieldset>-->
+<!--										<input type="submit" class="button" id="button" value="Send Message">-->
+<!--									</fieldset>-->
+<!--								</form>-->
+<!--							</div>-->
+<!--						</div>-->
+<!--						<div class="col-md-4 col-sm-4">-->
+<!--							<div class="box-content">-->
+<!--								<h3 class="widget-title">Stay In Touch</h3>-->
+<!--								<p>Sed ullamcorper, risus a tincidunt efficitur, massa mauris ultricies leo, eu interdum eros erat non augue. <br><br>-->
+<!--								Suspendisse ornare sollicitudin lectus non egestas. Nam fermentum imperdiet ligula congue venenatis. </p>-->
+<!--								<div class="about-social">-->
+<!--									<ul>-->
+<!--										<li><a href="#" class="fa fa-facebook"></a></li>-->
+<!--										<li><a href="#" class="fa fa-twitter"></a></li>-->
+<!--										<li><a href="#" class="fa fa-linkedin"></a></li>-->
+<!--										<li><a href="#" class="fa fa-dribbble"></a></li>-->
+<!--									</ul>-->
+<!--								</div>-->
+<!--							</div>-->
+<!--						</div>-->
+<!--					</div>-->
+				</div>
+
+			</div>
+		</div>
+
+
+		<div class="col-md-3 hidden-sm">
+
+			<nav id="nav" class="main-navigation hidden-xs hidden-sm">
+				<ul class="main-menu">
+					<li>
+						<a class="show-1 active homebutton" href="#"><i class="fa fa-home"></i>Home</a>
+					</li>
+					<li>
+						<a class="show-2 aboutbutton" href="#"><i class="fa fa-map"></i>Hotspot map</a>
+					</li>
+					<li>
+						<a class="show-3 projectbutton" href="#"><i class="fa fa-id-card"></i>Lost Things</a>
+					</li>
+					<li>
+						<a class="show-5 contactbutton" href="#"><i class="fa fa-question"></i>Picked Things</a>
+					</li>
+				</ul>
+			</nav>
+
+		</div>
+	</div>
+</div>
+
+<!-- SITE-FOOTER -->
+<div class="site-footer">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12 text-center">
+				<p class="phone-info">Call us: Lost&Found@tongji.edu.cn </p>
+			</div>
+		</div>
+	</div>
+</div> <!-- .site-footer -->
+
+<script src="../static/js/vendor/jquery-1.10.2.min.js"></script>
+<script src="../static/js/plugins.js"></script>
+<script src="../static/js/main.js"></script>
+<!-- templatemo 439 rectangle -->
 </body>
 </html>

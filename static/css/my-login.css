@@ -73,3 +73,14 @@ body.my-login-page {
 		padding: 15px;
 	}
 }
+
+.site-bg {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  z-index: 0;
+  background-image: url(../img/bg.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-import os, uuid, click, sys
+import os, uuid, click, sys, math
 
 
 from flask import Flask, render_template, flash, redirect, url_for, request, send_from_directory, session
-from forms import RegisterForm, LoginForm, ForgotForm, ResetForm, LostForm
+from forms import RegisterForm, LoginForm, ForgotForm, ResetForm, LostForm, FoundForm
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 
@@ -43,7 +43,64 @@ def initdb(drop):
     click.echo('Initialized database.')
 
 
+def convert_coor_to_pixelcoor(coor):
+    lib_coor = (121.218355, 31.292920)
+    star_coor = (121.224631, 31.293527)
+    lib_pixelcoor = (470, 252)
+    star_pixelcoor = (218, 223)
+    # app.logger.info('coor')
+    # app.logger.info(coor)
+    # app.logger.info('coor[0] - lib_coor[0]')
+    # app.logger.info(coor[0] - lib_coor[0])
+    # app.logger.info('star_coor[0] - lib_coor[0]')
+    # app.logger.info(star_coor[0] - lib_coor[0])
+    # app.logger.info(lib_pixelcoor[0] + (coor[0] - lib_coor[0]) / (star_coor[0] - lib_coor[0]) * (star_pixelcoor[0] - lib_pixelcoor[0]))
+    return (lib_pixelcoor[0] + ((coor[0] - lib_coor[0]) / (star_coor[0] - lib_coor[0])) * ((star_pixelcoor[0] - lib_pixelcoor[0])),
+            lib_pixelcoor[1] + ((coor[1] - lib_coor[1]) / (star_coor[1] - lib_coor[1])) * (star_pixelcoor[1] - lib_pixelcoor[1]))
+
+
+def convert_type(num_type):
+    type_dict = {1: 'License', 2: 'Digital device', 3: 'Jewelry and Ornament', 4: 'Cosmetics and Daily supplies', 5: 'Clothes and Shoes', 6: 'Books and Files'}
+    return type_dict[num_type]
+
+
+def convert_location_to_txt(location):
+    locations = location.split(',')
+    locations = [location.split('-')[-3] if len(location.split('-')) >= 3 else location.split('-')[-1]
+                 for location in locations]
+    # app.logger.info(locations)
+    return '，'.join(locations)
+
+
+def convert_location_to_xy(location):
+    locations = location.split(',')
+    app.logger.info(locations)
+    coor_lst = [(float(location.split('-')[-2]), float(location.split('-')[-1])) if len(location.split('-')) >= 3 else None
+                for location in locations]
+    pixelcoor_lst = [convert_coor_to_pixelcoor(coor) for coor in coor_lst]
+    app.logger.info(pixelcoor_lst)
+    return pixelcoor_lst
+
+
+def get_distance(lost_thing, pick_thing):
+    lost_locations = convert_location_to_xy(lost_thing.location)
+    pick_location = convert_location_to_xy(pick_thing.location)[0]
+    min_distance = 20
+    app.logger.info(lost_locations)
+    app.logger.info(pick_location)
+    for lost_location in lost_locations:
+        distance = math.sqrt((float(lost_location[0]) - float(pick_location[0])) ** 2 + (float(lost_location[1]) - float(pick_location[1])) ** 2)
+        min_distance = distance if distance < min_distance else min_distance
+    app.logger.info('min_distance')
+    app.logger.info(min_distance)
+    return min_distance
+
+
 # database
+match_table = db.Table('match_things', db.Column('lost_id', db.Integer, db.ForeignKey('lostThing.id')),
+                       db.Column('pick_id', db.Integer, db.ForeignKey('pickThing.id')))
+
+
 class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20))
@@ -57,31 +114,48 @@ class Student(db.Model):
 
 
 class LostThing(db.Model):
+    __tablename__ = 'lostThing'
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.Integer)
+    name = db.Column(db.String(20))
     lostDate = db.Column(db.Date)
     contactPerson = db.Column(db.String(20))
     contactEmail = db.Column(db.String(40))
-    location = db.Column(db.Integer)
+    location = db.Column(db.String(200))
     complement = db.Column(db.String(100))
+    status = db.Column(db.Integer)  # 0 for waiting; 1 for matched; 2 for found
     lostStudent_id = db.Column(db.Integer, db.ForeignKey('student.id'))
+    match_pick_things = db.relationship('PickThing',
+                                   secondary=match_table,
+                                   back_populates='match_lost_things')
 
     def __repr__(self):
         return '<LostThing %r>' % self.id
 
 
 class PickThing(db.Model):
+    __tablename__ = 'pickThing'
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.Integer)
+    name = db.Column(db.String(20))
     pickDate = db.Column(db.Date)
     contactPerson = db.Column(db.String(20))
     contactEmail = db.Column(db.String(40))
     location = db.Column(db.Integer)
     complement = db.Column(db.String(100))
+    status = db.Column(db.Integer)  # 0 for waiting; 1 for matched; 2 for found
     pickStudent_id = db.Column(db.Integer, db.ForeignKey('student.id'))
+    match_lost_things = db.relationship('LostThing',
+                                        secondary=match_table,
+                                        back_populates='match_pick_things')
 
     def __repr__(self):
         return '<PickThing %r>' % self.id
+
+
+def check_login():
+    if 'logged_in' not in session or not Student.query.get(session['login_user']):
+        return redirect(url_for('login'))
 
 
 @app.route('/welcome')
@@ -91,9 +165,21 @@ def welcome():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    if 'logged_in' not in session:
-        return redirect(url_for('login'))
-    return render_template('index.html')
+    check_login()
+    student = Student.query.get(session['login_user'])
+    num_per_page = 2
+    all_lost_things = LostThing.query.all()
+    all_pick_things = PickThing.query.all()
+    return render_template('index.html',
+                           student=student,
+                           all_lost_things=all_lost_things,
+                           all_pick_things=all_pick_things,
+                           convert_type=convert_type,
+                           convert_location_to_txt=convert_location_to_txt,
+                           convert_location_to_xy=convert_location_to_xy,
+                           int=int,
+                           num_per_page=num_per_page,
+                           pages=math.ceil(len(all_lost_things)/num_per_page))
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -118,7 +204,7 @@ def login():
     loginForm = LoginForm()
     # if 'logged_in' in session:
     #     return redirect(url_for('index'))
-    if request.method == 'GET' and 'login_user' in session and Student.query.filter_by(id=session['login_user']):
+    if request.method == 'GET' and 'login_user' in session and Student.query.get(session['login_user']) and Student.query.filter_by(id=session['login_user']):
         loginForm.email.data = Student.query.filter_by(id=session['login_user']).first().emailAddress
         if 'remember' in session:
             loginForm.password.data = Student.query.filter_by(id=session['login_user']).first().password
@@ -170,22 +256,107 @@ def reset(user_id):
     return render_template('reset.html', form=resetForm)
 
 
-@app.route('/Terms and Conditions')
-def Terms_and_Conditions():
-    return '<h1>!!!Surprise!!!</h1>'
-
-
 @app.route('/lost', methods=['GET', 'POST'])
 def lost():
     lostForm = LostForm()
-    if lostForm.validate_on_submit():
+    if 'logged_in' not in session:
         return redirect(url_for('login'))
+    # if (request.method == 'POST'):
+    #     lostInfo = request.form.to_dict()
+    #     app.logger.info(lostInfo)
+    #     (year, month, day) = lostInfo['lostDate'].split('-')
+    #     date = datetime.date(int(year), int(month), int(day))
+    #     app.logger.info(date.year)
+    #     for loc in lostForm.lostLocation.data.split(','):
+    #         app.logger.info(loc)
+    if lostForm.validate_on_submit():
+        app.logger.info('nb')
+        date = None
+        lost_info = request.form.to_dict()
+        if (lost_info['lostDate'] != ''):
+            (year, month, day) = lost_info['lostDate'].split('-')
+            date = datetime.date(int(year), int(month), int(day))
+        lost_thing = LostThing(
+            type=lostForm.itemType.data,
+            name=lostForm.itemName.data,
+            lostDate=date,
+            contactPerson=lostForm.contactPerson.data,
+            contactEmail=lostForm.emailAddress.data,
+            location=lostForm.lostLocation.data,
+            complement=lostForm.complement.data,
+            status=0,
+            lostStudent_id=session['login_user']
+        )
+        for pick_thing in PickThing.query.filter_by(type=lost_thing.type).filter(PickThing.status.in_([0, 1])):
+            if (get_distance(lost_thing, pick_thing) <= 10):
+                lost_thing.status = 1
+                pick_thing.status = 1
+                lost_thing.match_pick_things.append(pick_thing)
+                pick_thing.match_lost_things.append(lost_thing)
+        db.session.add(lost_thing)
+        db.session.commit()
+        return redirect(url_for('index'))
     return render_template('lost.html', form=lostForm)
 
 
-@app.route('/found')
+@app.route('/found', methods=['GET', 'POST'])
 def found():
-    return render_template('found.html')
+    foundForm = FoundForm()
+    if 'logged_in' not in session:
+        return redirect(url_for('login'))
+    # if (request.method == 'POST'):
+    #     lostInfo = request.form.to_dict()
+    #     app.logger.info(lostInfo)
+    #     (year, month, day) = lostInfo['lostDate'].split('-')
+    #     date = datetime.date(int(year), int(month), int(day))
+    #     app.logger.info(date.year)
+    #     for loc in lostForm.lostLocation.data.split(','):
+    #         app.logger.info(loc)
+    if foundForm.validate_on_submit():
+        app.logger.info('nb')
+        date = None
+        pick_info = request.form.to_dict()
+        if (pick_info['lostDate'] != ''):
+            (year, month, day) = pick_info['lostDate'].split('-')
+            date = datetime.date(int(year), int(month), int(day))
+        pick_thing = PickThing(
+            type=foundForm.itemType.data,
+            name=foundForm.itemName.data,
+            pickDate=date,
+            contactPerson=foundForm.contactPerson.data,
+            contactEmail=foundForm.emailAddress.data,
+            location=foundForm.foundLocation.data,
+            complement=foundForm.complement.data,
+            status=0,
+            pickStudent_id=session['login_user']
+        )
+        for lost_thing in PickThing.query.filter_by(type=pick_thing.type).filter(LostThing.status.in_([0, 1])):
+            if (get_distance(lost_thing, pick_thing) <= 10):
+                lost_thing.status = 1
+                pick_thing.status = 1
+                lost_thing.match_pick_things.append(pick_thing)
+                pick_thing.match_lost_things.append(lost_thing)
+        db.session.add(pick_thing)
+        db.session.commit()
+        return redirect(url_for('index'))
+    return render_template('found.html', form=foundForm)
+
+
+@app.route('/personal_page')
+def personal_page():
+    check_login()
+    student = Student.query.get(session['login_user'])
+    return render_template('personal_page.html',
+                           student=student,
+                           convert_type=convert_type,
+                           convert_location_to_txt=convert_location_to_txt
+                           )
+
+
+@app.route('/Terms_and_Conditions')
+def Terms_and_Conditions():
+    return '<h1>Surprise!</h1>'
+
 
 def checkRememberAndPop():
     if 'remember' in session:
