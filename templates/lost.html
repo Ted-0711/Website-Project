@@ -13,12 +13,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lost</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"
-        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-	<link rel="stylesheet" type="text/css" href="../static/css/my-login.css">
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/my-login.css">
+    <link rel="stylesheet" href="../static/css/font-awesome.css">
     <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
     <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="js/jquery-1.10.2.js"></script>
+    <script src="js/jquery-browser.js"></script>
+    <script src="js/jquery.imageView.js"></script>
+    <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=hjpHex4OdzQGBwiRpGYLmY0uHkNpKKxj"></script>
+    <script type="text/javascript"
+        src="http://api.map.baidu.com/library/AreaRestriction/1.2/src/AreaRestriction_min.js"></script>
     <style type="text/css">
         .BMap_geolocationIconBackground {
             display: none;
@@ -27,21 +32,100 @@
         .BMap_stdMpZoom {
             top: 50px !important
         }
+        .topside{
+            background:rgba(0,0,0,0.7);
+            height:50px;
+            width:100%;
+            position:fixed;
+            top:0px;
+            z-index:2;
+        }
+        .iconbox{
+            width:100px;
+            height:30px;
+            float:right;
+            text-align:center;
+            line-height:50px;
+            color:#fff;
+            font-size:24px;
+            position:relative;
+            margin-top: -5px;
+        }
+        .badge{
+            padding: 1px 2px;
+            border-radius: 50%;
+            background: #d00;
+            position: absolute;
+            top: 14px;
+            left: 23px;
+            font-size: 3px;
+        }
+        .subMenu{
+            width: 150px;
+            position: absolute;
+            top: 37px;
+            right: -60px;
+            line-height: 30px;
+            font-size: 16px;
+            background: #fff;
+            display: none;
+            text-align: left;
+            padding-left: 10px;
+        }
+        .subMenu li{
+            list-style:none;
+            line-height:30px;
+            font-size:14px;
+        }
+        .subMenu li a{
+            color:#000;
+            text-decoration:none;
+        }
+        .subMenu li i{
+            margin-right:10px;
+            line-height:30px;
+        }
+        .mr30{
+            margin-right:140px;
+        }
+        .ic2 a{
+            color:white;
+        }
+        .container{
+            margin-top: 50px;
+        }
     </style>
-    <script src="js/jquery-1.10.2.js"></script>
-    <script src="js/jquery-browser.js"></script>
-    <script src="js/jquery.imageView.js"></script>
-    <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=hjpHex4OdzQGBwiRpGYLmY0uHkNpKKxj"></script>
-    <script type="text/javascript"
-        src="http://api.map.baidu.com/library/AreaRestriction/1.2/src/AreaRestriction_min.js"></script>
 </head>
 
 <body>
+    <div class="topside">
+        <div class="iconbox ic1 mr30"><i class="fa fa-user" aria-hidden="true" style="font-size: 15px;"> User</i>
+            <div class="subMenu">
+                <ul class="sub1">
+                    <li><A href="{{ url_for('personal_page') }}"><i class="fa fa-credit-card"></i> User</A></li>
+                    <li><A href="{{ url_for('log_out') }}"><i class="fa fa-sign-out"></i>Sign Out</A></li>
+                </ul>
+            </div>
+        </div>
+        <div class="iconbox ic2"><A href="{{ url_for('personal_page') }}"><i class="fa fa-bell" style="font-size: 15px;"> Notice</i><span
+                class="badge pull-right">{{ notice_num }}</span></A></div>
+
+        <div class="iconbox ic1"><i class="fa fa-plus" style="font-size: 15px;"> Add</i>
+            <div class="subMenu">
+                <ul class="sub2">
+                    <li><A href="{{ url_for('lost') }}"><i class="fa fa-plus"></i>Add Lost</A></li>
+                    <li><A href="{{ url_for('found') }}"><i class="fa fa-plus"></i>Add Found</A></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="iconbox ic2"><A href="{{ url_for('index') }}"><i class="fa fa-home" style="font-size: 15px;">HomePage</i></A></div>
+    </div>
     <div class="container">
         <form method="POST" novalidate="">
         {{ form.csrf_token }}
         <br>
-        <h1>Add information of a lost thing <span class="badge badge-secondary">New</span></h1>
+        <h1>Add information of a lost thing</h1>
         <br>
         <span>
             {{ form.itemType.label }}
@@ -75,7 +159,7 @@
                     </div>
                 {% endfor %}
             {% else %}
-                {{ form.contactPerson }}
+                {{ form.contactPerson(value=student.name) }}
             {% endif %}
         </div>
         <div class="form-group">
@@ -88,7 +172,7 @@
                     </div>
                 {% endfor %}
             {% else %}
-                {{ form.emailAddress }}
+                {{ form.emailAddress(value=student.emailAddress) }}
             {% endif %}
         </div>
 
@@ -231,5 +315,31 @@
     </div>
 
 </body>
+<script>
+	$(document).ready(function () {
+		$(".w100").css("width", "100%");
+		$(".aside").css("left", "-230px");
+		$(".keybtn").find('.fa').attr('class', "fa fa-chevron-right");
 
+		var onoff = true;
+		$(".keybtn").click(function () {
+			if (onoff) {
+				onoff = !onoff
+				$(".aside").animate({ left: '0px' });
+				$(this).find('.fa').attr('class', "fa fa-chevron-left");
+				$(".w100").css("width", "calc(100vw - 230px)");
+			} else {
+				onoff = !onoff
+				$(".aside").animate({ left: '-230px' });
+				$(this).find('.fa').attr('class', "fa fa-chevron-right");
+				$(".w100").css("width", "100vw");
+			}
+		});
+		$(".ic1").hover(function () {
+			$(this).find(".subMenu").css("display", "block");
+		}, function () {
+			$(this).find(".subMenu").css("display", "none");
+		});
+	});
+</script>
 </html>

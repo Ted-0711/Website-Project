@@ -16,8 +16,12 @@
 	<link rel="stylesheet" href="../static/css/font-awesome.css">
 	<link rel="stylesheet" href="../static/css/bootstrap.min.css">
 	<link rel="stylesheet" href="../static/css/templatemo-style.css">
+<!--	<link href="../static/css/style1.css" rel="stylesheet">-->
 	<script src="../static/js/vendor/modernizr-2.6.2.min.js"></script>
-<style>
+	<script src="../static/js/jquery.js"></script>
+	<script src="../static/js/bootstrap.js"></script>
+	<script src="../static/js/index.js"></script>
+<style type="text/css">
 	#imageView_container {
 		border: 1px solid #00000034;
 		border-radius: 1%;
@@ -105,8 +109,155 @@
 		left: 50%;
 		transform: translate(-50%, -50%);
 		border-radius: 50%;
-		box-shadow: 0 0 15px rgb(231, 126, 126);
+		box-shadow: 0 0 15px rgb(231, 126, 126)
+	}
 
+	.dotted_blue {
+		width: 6px;
+		height: 6px;
+		background-color: rgba(12, 178, 243, 0.548);
+		border-radius: 50%;
+	}
+
+
+	.shine1_blue {
+		animation: suo 1s linear 0s infinite;
+		position: absolute;
+		width: 6px;
+		height: 6px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		border-radius: 50%;
+		box-shadow: 0 0 15px rgba(50, 15, 248, 0.87);
+	}
+
+	.shine2_blue {
+		animation: suo 1s linear 0.6s infinite;
+		position: absolute;
+		width: 6px;
+		height: 6px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		border-radius: 50%;
+		box-shadow: 0 0 15px rgba(10, 85, 247, 0.938);
+	}
+
+	.shine3_blue {
+		animation: suo 1s linear 1.2s infinite;
+		position: absolute;
+		width: 6px;
+		height: 6px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		border-radius: 50%;
+		box-shadow: 0 0 15px rgba(8, 121, 250, 0.911)
+	}
+
+	.dotted_green {
+		width: 6px;
+		height: 6px;
+		background-color: rgba(26, 143, 22, 0.726);
+		border-radius: 50%;
+	}
+
+
+	.shine1_green {
+		animation: suo 1s linear 0s infinite;
+		position: absolute;
+		width: 6px;
+		height: 6px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		border-radius: 50%;
+		box-shadow: 0 0 15px rgba(35, 141, 123, 0.87);
+	}
+
+	.shine2_green {
+		animation: suo 1s linear 0.6s infinite;
+		position: absolute;
+		width: 6px;
+		height: 6px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		border-radius: 50%;
+		box-shadow: 0 0 15px rgba(7, 145, 122, 0.938);
+	}
+
+	.shine3_green {
+		animation: suo 1s linear 1.2s infinite;
+		position: absolute;
+		width: 6px;
+		height: 6px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		border-radius: 50%;
+		box-shadow: 0 0 15px rgba(8, 114, 31, 0.911);
+	}
+
+	.topside{
+		background:rgba(0,0,0,0.7);
+		height:50px;
+		width:100%;
+		position:fixed;
+		top:0px;
+		z-index:2;
+	}
+	.iconbox{
+		width:100px;
+		height:30px;
+		float:right;
+		text-align:center;
+		line-height:50px;
+		color:#fff;
+		font-size:24px;
+		position:relative;
+		margin-top: -5px;
+	}
+	.badge{
+		padding: 1px 2px;
+		border-radius: 50%;
+		background: #d00;
+		position: absolute;
+		top: 14px;
+		left: 23px;
+		font-size: 3px;
+	}
+	.subMenu{
+		width: 150px;
+		position: absolute;
+		top: 37px;
+		right: -60px;
+		line-height: 30px;
+		font-size: 16px;
+		background: #fff;
+		display: none;
+		text-align: left;
+		padding-left: 10px;
+	}
+	.subMenu li{
+		list-style:none;
+		line-height:30px;
+		font-size:14px;
+	}
+	.subMenu li a{
+		color:#000;
+		text-decoration:none;
+	}
+	.subMenu li i{
+		margin-right:10px;
+		line-height:30px;
+	}
+	.mr30{
+		margin-right:140px;
+	}
+	.ic2 a{
+		color:white;
 	}
 </style>
 </head>
@@ -115,25 +266,53 @@
 <!--<div class="site-bg"></div>-->
 <!--<div class="site-bg-overlay"></div>-->
 
-<!-- TOP HEADER -->
-<div class="top-header">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-6 col-sm-6 col-xs-12">
-			</div>
-			<div class="col-md-6 col-sm-6 col-xs-12">
-				<div class="social-icons">
-					<ul>
-						<li><a href="{{ url_for('lost') }}" class="fa fa-plus "> Add Lost</a></li>
-						<li><a href="{{ url_for('found') }}" class="fa fa-plus "> Add Found</a></li>
-						<li><a href="#" class="fa fa-bell "> Notice</a></li>
-						<li><a href="{{ url_for('personal_page') }}" class="fa fa-user "> Person</a></li>
-					</ul>
-				</div>
-			</div>
+<!--&lt;!&ndash; TOP HEADER &ndash;&gt;-->
+<!--<div class="top-header">-->
+<!--	<div class="container">-->
+<!--		<div class="row">-->
+<!--			<div class="col-md-6 col-sm-6 col-xs-12">-->
+<!--			</div>-->
+<!--			<div class="col-md-6 col-sm-6 col-xs-12">-->
+<!--				<div class="social-icons">-->
+<!--					<ul>-->
+<!--						<li><a href="{{ url_for('lost') }}" class="fa fa-plus "> Add Lost</a></li>-->
+<!--						<li><a href="{{ url_for('found') }}" class="fa fa-plus "> Add Found</a></li>-->
+<!--						<li><a href="#" class="fa fa-bell "> Notice</a></li>-->
+<!--						<li><a href="{{ url_for('personal_page') }}" class="fa fa-user "> Person</a></li>-->
+<!--					</ul>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--		</div>-->
+<!--	</div>-->
+<!--</div> &lt;!&ndash; .top-header &ndash;&gt;-->
+
+
+<div id="pages" data-lost_pages="{{ lost_pages }}" data-pick_pages="{{ pick_pages }}"></div>
+
+
+<div class="topside">
+	<div class="iconbox ic1 mr30"><i class="fa fa-user" aria-hidden="true" style="font-size: 15px;"> User</i>
+		<div class="subMenu">
+			<ul class="sub1">
+				<li><A href="{{ url_for('personal_page') }}"><i class="fa fa-credit-card"></i> User</A></li>
+				<li><A href="{{ url_for('log_out') }}"><i class="fa fa-sign-out"></i>Sign Out</A></li>
+			</ul>
 		</div>
 	</div>
-</div> <!-- .top-header -->
+	<div class="iconbox ic2"><A href="{{ url_for('personal_page') }}"><i class="fa fa-bell" style="font-size: 15px;"> Notice</i><span
+			class="badge pull-right">{{ notice_num }}</span></A></div>
+
+	<div class="iconbox ic1"><i class="fa fa-plus" style="font-size: 15px;"> Add</i>
+		<div class="subMenu">
+			<ul class="sub2">
+				<li><A href="{{ url_for('lost') }}"><i class="fa fa-plus"></i>Add Lost</A></li>
+				<li><A href="{{ url_for('found') }}"><i class="fa fa-plus"></i>Add Found</A></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="iconbox ic2"><A href="{{ url_for('index') }}"><i class="fa fa-home" style="font-size: 15px;">HomePage</i></A></div>
+</div>
 
 
 <div class="visible-xs visible-sm responsive-menu">
@@ -186,12 +365,47 @@
 									<img src="../static/img/map.jpg" alt="">
 									{% for lost_thing in all_lost_things %}
 										{% for lost_pixelcoor in convert_location_to_xy(lost_thing.location) %}
+											{% if lost_thing.status == 1 %}
 											<div style="position: absolute; right: {{ int(lost_pixelcoor[0]) }}px; top: {{ int(lost_pixelcoor[1]) }}px;">
 												<div class="dotted_red" click></div>
 												<div class="shine1_red"></div>
 												<div class="shine2_red"></div>
 												<div class="shine3_red"></div>
 											</div>
+											{% elif lost_thing.status == 0 %}
+											<div style="position: absolute; right: {{ int(lost_pixelcoor[0]) }}px; top: {{ int(lost_pixelcoor[1]) }}px;">
+												<div class="dotted_blue" click></div>
+												<div class="shine1_blue"></div>
+												<div class="shine2_blue"></div>
+												<div class="shine3_blue"></div>
+											</div>
+											{% endif %}
+										{% endfor %}
+									{% endfor %}
+									{% for pick_thing in all_pick_things %}
+										{% for pick_pixelcoor in convert_location_to_xy(pick_thing.location) %}
+											{% if pick_thing.status == 1 %}
+											<div style="position: absolute; right: {{ int(pick_pixelcoor[0]) }}px; top: {{ int(pick_pixelcoor[1]) }}px;">
+												<div class="dotted_red" data-toggle="popover" data-content="It would be my honor if I could help you" click></div>
+												<div class="shine1_red"></div>
+												<div class="shine2_red"></div>
+												<div class="shine3_red"></div>
+											</div>
+											{% elif pick_thing.status == 0 %}
+											<div style="position: absolute; right: {{ int(pick_pixelcoor[0]) }}px; top: {{ int(pick_pixelcoor[1]) }}px;">
+												<div class="dotted_blue" click></div>
+												<div class="shine1_blue"></div>
+												<div class="shine2_blue"></div>
+												<div class="shine3_blue"></div>
+											</div>
+											{% elif pick_thing.status == 2 %}
+											<div style="position: absolute; right: {{ int(pick_pixelcoor[0]) }}px; top: {{ int(pick_pixelcoor[1]) }}px;">
+												<div class="dotted_green" click></div>
+												<div class="shine1_green"></div>
+												<div class="shine2_green"></div>
+												<div class="shine3_green"></div>
+											</div>
+											{% endif %}
 										{% endfor %}
 									{% endfor %}
 									<div class="project-hover">
@@ -277,12 +491,12 @@
 <!--					</div>-->
 				</div>
 
-				{% for i in range(pages) %}
+				{% for i in range(lost_pages) %}
 				<div id="menu-3" class="content gallery-section-{{ i+1 }}">
 					<div class="row">
 						<div class="col-md-12 col-sm-12">
 							<div class="box-content">
-								<h3 class="widget-title">Lost Things</h3>
+								<h3 class="widget-title">All Lost Things</h3>
 								<div class="box-content profile">
 									<!-- Lost table -->
 									<table class="table">
@@ -295,7 +509,7 @@
 											</tr>
 										</thead>
 										<tbody class="text-center">
-											{% for lost_thing in all_lost_things[i*num_per_page:(i+1)*num_per_page] %}
+											{% for lost_thing in all_not_found_lost_things[i*num_per_page:(i+1)*num_per_page] %}
 											<tr>
 												<td> {{ convert_type(lost_thing.type) }} </td>
 												<td> {{ lost_thing.name }} </td>
@@ -308,7 +522,7 @@
 								</div>
 								<div class="project-pages">
 									<ul class="page-menu-lost">
-										{% for j in range(pages) %}
+										{% for j in range(lost_pages) %}
 											<li><a class="page-{{ j+1 }}" href="#">{{ j+1 }}</a></li>
 										{% endfor %}
 									</ul>
@@ -319,24 +533,25 @@
 				</div>
 				{% endfor %}
 
-				<div id="menu-4" class="content contact-section">
+				{% for i in range(pick_pages) %}
+				<div id="menu-4" class="content contact-section-{{ i+1 }}">
 					<div class="row">
 						<div class="col-md-12 col-sm-12">
 							<div class="box-content">
-								<h3 class="widget-title">Picked Things</h3>
+								<h3 class="widget-title">All Found Things</h3>
 								<div class="box-content profile">
-									<!-- Lost table -->
+									<!-- Found table -->
 									<table class="table">
 										<thead class="text-center">
 											<tr>
 												<th>Item Type</th>
 												<th>Item Name</th>
-												<th>Lost Location</th>
+												<th>Found Location</th>
 												<th>Contact Address</th>
 											</tr>
 										</thead>
 										<tbody class="text-center">
-											{% for pick_thing in all_pick_things %}
+											{% for pick_thing in all_not_found_pick_things[i*num_per_page:(i+1)*num_per_page] %}
 											<tr>
 												<td> {{ convert_type(pick_thing.type) }} </td>
 												<td> {{ pick_thing.name }} </td>
@@ -348,16 +563,58 @@
 									</table><!-- lost table -->
 								</div>
 								<div class="project-pages">
-									<ul>
-										<li><a href="#">1</a></li>
-										<li><a href="#">2</a></li>
-										<li><a href="#">3</a></li>
-										<li><a href="#">...</a></li>
+									<ul class="page-menu-found">
+										{% for j in range(pick_pages) %}
+											<li><a class="page-{{ j+1 }}" href="#">{{ j+1 }}</a></li>
+										{% endfor %}
 									</ul>
 								</div>
 							</div>
 						</div>
 					</div>
+				</div>
+				{% endfor %}
+<!--				<div id="menu-4" class="content contact-section">-->
+<!--					<div class="row">-->
+<!--						<div class="col-md-12 col-sm-12">-->
+<!--							<div class="box-content">-->
+<!--								<h3 class="widget-title">Picked Things</h3>-->
+<!--								<div class="box-content profile">-->
+<!--									&lt;!&ndash; Lost table &ndash;&gt;-->
+<!--									<table class="table">-->
+<!--										<thead class="text-center">-->
+<!--											<tr>-->
+<!--												<th>Item Type</th>-->
+<!--												<th>Item Name</th>-->
+<!--												<th>Lost Location</th>-->
+<!--												<th>Contact Address</th>-->
+<!--											</tr>-->
+<!--										</thead>-->
+<!--										<tbody class="text-center">-->
+<!--											{% for pick_thing in all_pick_things %}-->
+<!--											<tr>-->
+<!--												<td> {{ convert_type(pick_thing.type) }} </td>-->
+<!--												<td> {{ pick_thing.name }} </td>-->
+<!--												<td> {{ convert_location_to_txt(pick_thing.location) }} </td>-->
+<!--												<td> {{ pick_thing.contactEmail }} </td>-->
+<!--											</tr>-->
+<!--											{% endfor %}-->
+<!--										</tbody>-->
+<!--									</table>&lt;!&ndash; lost table &ndash;&gt;-->
+<!--								</div>-->
+<!--								<div class="project-pages">-->
+<!--									<ul>-->
+<!--										<li><a href="#">1</a></li>-->
+<!--										<li><a href="#">2</a></li>-->
+<!--										<li><a href="#">3</a></li>-->
+<!--										<li><a href="#">...</a></li>-->
+<!--									</ul>-->
+<!--								</div>-->
+<!--							</div>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--				</div>-->
+
 <!--					<div class="row">-->
 <!--						<div class="col-md-8 col-sm-8">-->
 <!--							<div class="box-content">-->
@@ -397,7 +654,6 @@
 <!--							</div>-->
 <!--						</div>-->
 <!--					</div>-->
-				</div>
 
 			</div>
 		</div>
@@ -437,6 +693,38 @@
 	</div>
 </div> <!-- .site-footer -->
 
+<script>
+	$(document).ready(function () {
+		$(".w100").css("width", "100%");
+		$(".aside").css("left", "-230px");
+		$(".keybtn").find('.fa').attr('class', "fa fa-chevron-right");
+
+		var onoff = true;
+		$(".keybtn").click(function () {
+			if (onoff) {
+				onoff = !onoff
+				$(".aside").animate({ left: '0px' });
+				$(this).find('.fa').attr('class', "fa fa-chevron-left");
+				$(".w100").css("width", "calc(100vw - 230px)");
+			} else {
+				onoff = !onoff
+				$(".aside").animate({ left: '-230px' });
+				$(this).find('.fa').attr('class', "fa fa-chevron-right");
+				$(".w100").css("width", "100vw");
+			}
+		});
+		$(".ic1").hover(function () {
+			$(this).find(".subMenu").css("display", "block");
+		}, function () {
+			$(this).find(".subMenu").css("display", "none");
+		});
+	});
+</script>
+<script type="text/javascript">
+	$(function () {
+	  $('[data-toggle="popover"]').popover()
+	})
+</script>
 <script src="../static/js/vendor/jquery-1.10.2.min.js"></script>
 <script src="../static/js/plugins.js"></script>
 <script src="../static/js/main.js"></script>

@@ -96,6 +96,24 @@ def get_distance(lost_thing, pick_thing):
     return min_distance
 
 
+def get_notice_num(student):
+    notice_num = 0
+    for lost_thing in student.lostThings:
+        if (lost_thing.status == 1):
+            notice_num += 1
+    for pick_thing in student.pickThings:
+        if (pick_thing.status == 1):
+            notice_num += 1
+    return notice_num
+
+
+def redirect_back(default='index', **kwargs):
+    for target in request.args.get('next'), request.referrer:
+        if target:
+            return redirect(target)
+    return redirect(default, **kwargs)
+
+
 # database
 match_table = db.Table('match_things', db.Column('lost_id', db.Integer, db.ForeignKey('lostThing.id')),
                        db.Column('pick_id', db.Integer, db.ForeignKey('pickThing.id')))
@@ -155,7 +173,11 @@ class PickThing(db.Model):
 
 def check_login():
     if 'logged_in' not in session or not Student.query.get(session['login_user']):
-        return redirect(url_for('login'))
+        app.logger.info('fuck')
+        return 0
+    else:
+        app.logger.info('shit')
+        return 1
 
 
 @app.route('/welcome')
@@ -165,21 +187,29 @@ def welcome():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    check_login()
+    if (not check_login()):
+        return redirect(url_for('login'))
     student = Student.query.get(session['login_user'])
-    num_per_page = 2
+    notice_num = get_notice_num(student)
+    num_per_page = 10
     all_lost_things = LostThing.query.all()
+    all_not_found_lost_things = LostThing.query.filter(LostThing.status.in_([0, 1])).all()
     all_pick_things = PickThing.query.all()
+    all_not_found_pick_things = PickThing.query.filter(PickThing.status.in_([0, 1])).all()
     return render_template('index.html',
                            student=student,
                            all_lost_things=all_lost_things,
                            all_pick_things=all_pick_things,
+                           all_not_found_lost_things=all_not_found_lost_things,
+                           all_not_found_pick_things=all_not_found_pick_things,
                            convert_type=convert_type,
                            convert_location_to_txt=convert_location_to_txt,
                            convert_location_to_xy=convert_location_to_xy,
                            int=int,
                            num_per_page=num_per_page,
-                           pages=math.ceil(len(all_lost_things)/num_per_page))
+                           lost_pages=math.ceil(len(all_not_found_lost_things)/num_per_page),
+                           pick_pages=math.ceil(len(all_not_found_pick_things) / num_per_page),
+                           notice_num=notice_num)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -258,6 +288,8 @@ def reset(user_id):
 
 @app.route('/lost', methods=['GET', 'POST'])
 def lost():
+    if (not check_login()):
+        return redirect(url_for('login'))
     lostForm = LostForm()
     if 'logged_in' not in session:
         return redirect(url_for('login'))
@@ -269,6 +301,8 @@ def lost():
     #     app.logger.info(date.year)
     #     for loc in lostForm.lostLocation.data.split(','):
     #         app.logger.info(loc)
+    student = Student.query.get(session['login_user'])
+    notice_num = get_notice_num(student)
     if lostForm.validate_on_submit():
         app.logger.info('nb')
         date = None
@@ -296,11 +330,16 @@ def lost():
         db.session.add(lost_thing)
         db.session.commit()
         return redirect(url_for('index'))
-    return render_template('lost.html', form=lostForm)
+    return render_template('lost.html',
+                           student=student,
+                           form=lostForm,
+                           notice_num=notice_num)
 
 
 @app.route('/found', methods=['GET', 'POST'])
 def found():
+    if (not check_login()):
+        return redirect(url_for('login'))
     foundForm = FoundForm()
     if 'logged_in' not in session:
         return redirect(url_for('login'))
@@ -312,6 +351,8 @@ def found():
     #     app.logger.info(date.year)
     #     for loc in lostForm.lostLocation.data.split(','):
     #         app.logger.info(loc)
+    student = Student.query.get(session['login_user'])
+    notice_num = get_notice_num(student)
     if foundForm.validate_on_submit():
         app.logger.info('nb')
         date = None
@@ -330,8 +371,8 @@ def found():
             status=0,
             pickStudent_id=session['login_user']
         )
-        for lost_thing in PickThing.query.filter_by(type=pick_thing.type).filter(LostThing.status.in_([0, 1])):
-            if (get_distance(lost_thing, pick_thing) <= 10):
+        for lost_thing in LostThing.query.filter_by(type=pick_thing.type).filter(LostThing.status.in_([0, 1])):
+            if (get_distance(lost_thing, pick_thing) <= 15):
                 lost_thing.status = 1
                 pick_thing.status = 1
                 lost_thing.match_pick_things.append(pick_thing)
@@ -339,23 +380,81 @@ def found():
         db.session.add(pick_thing)
         db.session.commit()
         return redirect(url_for('index'))
-    return render_template('found.html', form=foundForm)
+    return render_template('found.html',
+                           student=student,
+                           form=foundForm,
+                           notice_num=notice_num)
 
 
 @app.route('/personal_page')
 def personal_page():
-    check_login()
+    if (not check_login()):
+        return redirect(url_for('login'))
     student = Student.query.get(session['login_user'])
+    personal_lost_things = student.lostThings
+    personal_lost_things.sort(key=lambda thing:(thing.status, thing.id))
+    personal_pick_things = student.pickThings
+    personal_pick_things.sort(key=lambda thing: (thing.status, thing.id))
     return render_template('personal_page.html',
                            student=student,
+                           personal_lost_things=personal_lost_things,
+                           personal_pick_things=personal_pick_things,
                            convert_type=convert_type,
-                           convert_location_to_txt=convert_location_to_txt
-                           )
+                           convert_location_to_txt=convert_location_to_txt)
 
 
 @app.route('/Terms_and_Conditions')
 def Terms_and_Conditions():
     return '<h1>Surprise!</h1>'
+
+
+@app.route('/match_things_found/<lost_thing_id><pick_thing_id>')
+def match_things_found(lost_thing_id, pick_thing_id):
+    lost_thing = LostThing.query.filter_by(id=lost_thing_id).first()
+    pick_thing = PickThing.query.filter_by(id=pick_thing_id).first()
+    lost_thing.status = pick_thing.status = 2
+    db.session.commit()
+    app.logger.info(lost_thing.status)
+    app.logger.info(pick_thing.status)
+    return redirect_back()
+
+
+@app.route('/log_out')
+def log_out():
+    session.pop('logged_in')
+    return redirect(url_for('login'))
+
+
+@app.route('/drop_lost_thing/<id>')
+def drop_lost_thing(id):
+    app.logger.info(id)
+    lost_thing = LostThing.query.get(int(id))
+    app.logger.info(LostThing.query.all())
+    if (lost_thing):
+        student = Student.query.get(lost_thing.lostStudent_id)
+        student.lostThings.remove(lost_thing)
+        for pick_thing in lost_thing.match_pick_things:
+            pick_thing.match_lost_things.remove(lost_thing)
+        db.session.delete(lost_thing)
+        db.session.commit()
+        app.logger.info('delete success')
+    return redirect(url_for('index'))
+
+
+@app.route('/drop_pick_thing/<id>')
+def drop_pick_thing(id):
+    app.logger.info(id)
+    pick_thing = PickThing.query.get(int(id))
+    app.logger.info(PickThing.query.all())
+    if (pick_thing):
+        student = Student.query.get(pick_thing.pickStudent_id)
+        student.pickThings.remove(pick_thing)
+        for lost_thing in pick_thing.match_lost_things:
+            lost_thing.match_pick_things.remove(pick_thing)
+        db.session.delete(pick_thing)
+        db.session.commit()
+        app.logger.info('delete success')
+    return redirect(url_for('index'))
 
 
 def checkRememberAndPop():
