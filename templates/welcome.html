@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <style>
+        #imageView_container {
+            border: 1px solid #00000034;
+            border-radius: 1%;
+        }
+
+        @keyframes suo {
+            0% {}
+
+            70% {
+                width: 15px;
+                height: 15px;
+                opacity: 1;
+            }
+
+            100% {
+                width: 35px;
+                height: 35px;
+                opacity: 0;
+            }
+        }
+
+
+        .campusmap {
+            position: relative;
+            height: 900px;
+            width: 900px;
+            margin: auto;
+            background: transparent no-repeat center;
+        }
+
+        .building-F {
+            position: absolute;
+            right: 243px;
+            top: 228px;
+        }
+
+        .building-G {
+            position: absolute;
+            right: 343px;
+            top: 328px;
+        }
+
+
+        /* 三重动态光圈 */
+        /* 打点 */
+        .dotted {
+            width: 6px;
+            height: 6px;
+            background-color: rgba(248, 84, 78, 0.7);
+            border-radius: 50%;
+        }
+
+
+        .shine1 {
+            animation: suo 1s linear 0s infinite;
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgb(231, 126, 126);
+        }
+
+        .shine2 {
+            animation: suo 1s linear 0.6s infinite;
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgb(231, 126, 126);
+
+        }
+
+        .shine3 {
+            animation: suo 1s linear 1.2s infinite;
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgb(231, 126, 126);
+
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+
+        <div id="imageView_container" class="container"
+            style="overflow: hidden; position: relative; width: 900px; height: 900px; ">
+            <img src="../static/img/map.jpg" id="rotImg" usemap="#Map"
+                style="overflow: scroll; cursor: move; visibility: visible; position: absolute; width:900px; height: 900px;" />
+            <div class="building building-G">
+                <div class="dotted" click></div>
+                <div class="shine1"></div>
+                <div class="shine2"></div>
+                <div class="shine3"></div>
+            </div>
+            <div class="building building-F">
+                <div class="dotted" click></div>
+                <div class="shine1"></div>
+                <div class="shine2"></div>
+                <div class="shine3"></div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<style type="text/css">
+		body{
+			background-image:url(../static/img/bg.jpg);
+			background-size: cover;
+			background-attachment: fixed;
+		}
+	</style>
+	<meta charset="utf-8" />
+	<title>个人主页</title>
+
+	<!--bootstrap css样式-->
+	<link href="../static/css/bootstrap.css" rel="stylesheet">
+	<link rel="stylesheet" href="../static/css/font-awesome.css">
+	<script src="../static/js/popper.min.js"></script>
+	<script src="../static/js/jquery.js"></script>
+	<script src="../static/js/bootstrap.js"></script>
+	<script src="../static/js/index.js"></script>
+	<link href="../static/css/style1.css" rel="stylesheet">
+	<script type="text/javascript">
+		$(function () {
+		  $('[data-toggle="popover"]').popover()
+		})
+	</script>
+	<script type="text/javascript">
+		{% for lost_thing in personal_lost_things %}
+		$(document).ready(function(){
+		  $("#lost_thing{{ lost_thing.id }}").click(function(){
+		  	$(".match_pick_things{{ lost_thing.id }}").slideToggle();
+		  });
+		});
+		{% endfor %}
+
+		{% for pick_thing in personal_pick_things %}
+		$(document).ready(function(){
+		  $("#pick_thing{{ pick_thing.id }}").click(function(){
+		  	$(".match_lost_things{{ pick_thing.id }}").slideToggle();
+		  });
+		});
+		{% endfor %}
+	</script>
+</head>
+
+<body>
+	<div class="aside">
+		<div class="as_top">
+			<p>Personal Page</p>
+		</div>
+		<div class="as_center">
+			<img src="../static/img/1.jpg" alt="头像"/>
+			<h2>Name</h2>
+			<P>Contribution</P>
+		</div>
+		<div class="as_bottom">
+			<ul class="app_menu">
+				<li><a class="app-menu__item" href="index.html"><i class=" glyphicon glyphicon-credit-card"></i>
+						<span class="app-menu__label">Person</span><i class="glyphicon glyphicon-menu-right"></i></a>
+				</li>
+
+				<li><a  class="app-menu__item" href="{{ url_for('personal_page') }}#A1"><i class=" glyphicon glyphicon-send"></i>
+						<span class="app-menu__label">My Lost</span><i class="glyphicon glyphicon-menu-right"></i></a>
+				</li>
+
+				<li class="treeview"><a class="app-menu__item" href="{{ url_for('personal_page') }}#A2" data-toggle="treeview"><i
+							class=" glyphicon glyphicon-search"></i>
+						<span class="app-menu__label">Pick up</span><i class="glyphicon glyphicon-menu-right"></i></a>
+				</li>
+				<li><a class="app-menu__item" href="message.html"><i class=" glyphicon glyphicon-envelope"></i>
+						<span class="app-menu__label">Suggestion</span><i
+							class="glyphicon glyphicon-menu-right"></i></a>
+				</li>
+				<li class="treeview"><a class="app-menu__item" href="option.html" data-toggle="treeview"><i
+							class=" glyphicon glyphicon-cog"></i>
+						<span class="app-menu__label">Settings</span><i class="glyphicon glyphicon-menu-right"></i></a>
+				</li>
+
+			</ul>
+		</div>
+		<div class="keybtn">
+			<i class="fa fa-chevron-right" aria-hidden="true"></i>
+		</div>
+	</div>
+
+	<div class="topside">
+		<div class="iconbox ic1 mr30"><i class="fa fa-user" aria-hidden="true" style="font-size: 15px;"> User</i>
+			<div class="subMenu">
+				<ul class="sub1">
+					<li><A href="{{ url_for('personal_page') }}"><i class="fa fa-credit-card"></i> User</A></li>
+					<li><A href="{{ url_for('log_out') }}"><i class="fa fa-sign-out"></i>Sign Out</A></li>
+				</ul>
+			</div>
+		</div>
+		<div class="iconbox ic2"><A href="{{ url_for('personal_page') }}"><i class="fa fa-bell" style="font-size: 15px;"> Notice</i></A></div>
+		
+		<div class="iconbox ic1"><i class="fa fa-plus" style="font-size: 15px;"> Add</i>
+			<div class="subMenu">
+				<ul class="sub2">
+					<li><A href="{{ url_for('lost') }}"><i class="fa fa-plus"></i>Add Lost</A></li>
+					<li><A href="{{ url_for('found') }}"><i class="fa fa-plus"></i>Add Found</A></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="iconbox ic2"><A href="{{ url_for('index') }}"><i class="fa fa-home" style="font-size: 15px;">HomePage</i></A></div>
+	</div>
+	<div class="w-auto">
+		<div class="main">
+			<h3 class="tit">
+				<span>Personal Information</span>
+			</h3>
+			<div class="content c1">
+				<div class="hang"><span class="name">Name</span><span class="value">{{ student.name }}</span></div>
+				<div class="hang"><span class="name">Email</span><span class="value">{{ student.emailAddress }}</span></div>
+				<div class="hang"><span class="name">School</span><span class="value">TongJi University</span></div>
+
+			</div>
+			<h3 class="tit">
+				<span id="A1">My Lost</span>
+			</h3>
+			<div class="box-content">
+				<div class="box-content">
+				<div class="box-content profile">
+					<table class="table">
+						<thead class="text-center">
+							<tr>
+								<th style="width: 200px;">Item Type</th>
+								<th style="width: 200px;">Item Name</th>
+								<th style="width: 250px;">Lost Location</th>
+								<th style="width: 200px;">Contact Person</th>
+								<th style="width: 200px;">Contact Email</th>
+								<th style="width: 250px;">Complement</th>
+								<th style="width: 150px;">Status</th>
+							</tr>
+						</thead>
+						<tbody class="text-center">
+							{% for lost_thing in personal_lost_things %}
+							<tr class="text-center">
+								<td>{{ convert_type(lost_thing.type) }}</td>
+								<td>{{ lost_thing.name }}</td>
+								<td>{{ convert_location_to_txt(lost_thing.location) }}</td>
+								<td>{{ lost_thing.contactPerson }}</td>
+								<td>{{ lost_thing.contactEmail }}</td>
+								<td>{{ lost_thing.complement }}</td>
+								<td>
+									{% if lost_thing.status == 0 %}
+									<button type="button" class="btn btn-primary"
+											data-toggle="popover"
+											data-content="Sorry, we're trying to find it">
+										Waiting
+									</button>
+									{% elif lost_thing.status == 1 %}
+									<button class="btn btn-danger"
+											id="lost_thing{{ lost_thing.id }}"
+											data-toggle="popover"
+											data-content="Look down for more information">
+										Matched
+									</button>
+									{% elif lost_thing.status == 2 %}
+									<button class="btn btn-success"
+											type="button"
+											data-toggle="popover"
+											data-content="It would be my honor if I could help you">
+										Found
+									</button>
+									{% endif %}
+								</td>
+							</tr>
+							{% if lost_thing.status == 1 %}
+								{% for pick_thing in lost_thing.match_pick_things %}
+									<tr class="match_pick_things{{ lost_thing.id }}" style="display: none;">
+										<td>{{ convert_type(pick_thing.type) }}</td>
+										<td>{{ pick_thing.name }}</td>
+										<td>{{ convert_location_to_txt(pick_thing.location) }}</td>
+										<td>{{ pick_thing.contactPerson }}</td>
+										<td>{{ pick_thing.contactEmail }}</td>
+										<td>{{ pick_thing.complement }}</td>
+										<td>
+											<a href="{{ url_for('match_things_found', lost_thing_id=lost_thing.id, pick_thing_id=pick_thing.id) }}">
+											<button class="btn btn-info">
+												That's it!
+											</button>
+											</a>
+										</td>
+									</tr>
+								{% endfor %}
+							{% endif %}
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<h3 class="tit">
+				<span id="A2">My Found</span>
+			</h3>
+			<div class="box-content">
+				<div class="box-content profile">
+					<table class="table">
+						<thead class="text-center">
+							<tr>
+								<th style="width: 200px;">Item Type</th>
+								<th style="width: 200px;">Item Name</th>
+								<th style="width: 250px;">Found Location</th>
+								<th style="width: 200px;">Contact Person</th>
+								<th style="width: 200px;">Contact Email</th>
+								<th style="width: 250px;">Complement</th>
+								<th style="width: 150px;">Status</th>
+							</tr>
+						</thead>
+						<tbody class="text-center">
+							{% for pick_thing in personal_pick_things %}
+							<tr class="text-center">
+								<td>{{ convert_type(pick_thing.type) }}</td>
+								<td>{{ pick_thing.name }}</td>
+								<td>{{ convert_location_to_txt(pick_thing.location) }}</td>
+								<td>{{ pick_thing.contactPerson }}</td>
+								<td>{{ pick_thing.contactEmail }}</td>
+								<td>{{ pick_thing.complement }}</td>
+								<td>
+									{% if pick_thing.status == 0 %}
+									<button type="button" class="btn btn-primary"
+											data-toggle="popover"
+											data-content="Sorry, we're trying to find it">
+										Waiting
+									</button>
+									{% elif pick_thing.status == 1 %}
+									<button class="btn btn-danger"
+											id="pick_thing{{ pick_thing.id }}"
+											data-toggle="popover"
+											data-content="Look down for more information">
+										Matched
+									</button>
+									{% elif pick_thing.status == 2 %}
+									<button class="btn btn-success"
+											type="button"
+											data-toggle="popover"
+											data-content="It would be my honor if I could help you">
+										Found
+									</button>
+									{% endif %}
+								</td>
+							</tr>
+							{% if pick_thing.status == 1 %}
+								{% for lost_thing in pick_thing.match_lost_things %}
+									<tr class="match_lost_things{{ pick_thing.id }}" style="display: none;">
+										<td>{{ convert_type(lost_thing.type) }}</td>
+										<td>{{ lost_thing.name }}</td>
+										<td>{{ convert_location_to_txt(lost_thing.location) }}</td>
+										<td>{{ lost_thing.contactPerson }}</td>
+										<td>{{ lost_thing.contactEmail }}</td>
+										<td>{{ lost_thing.complement }}</td>
+										<td>
+											<a href="{{ url_for('match_things_found', lost_thing_id=lost_thing.id, pick_thing_id=pick_thing.id) }}">
+											<button class="btn btn-info">
+												That's it!
+											</button>
+											</a>
+										</td>
+									</tr>
+								{% endfor %}
+							{% endif %}
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<!--<div class="content">
+			<div class="smallbox">
+				<img src="images/3.jpg">
+				<div class="txt">
+					<span>Name</span>
+					<span>Location</span>
+					<span>Time</span>
+					<span class="s2">Description</span>
+				</div>
+			</div>
+			<div class="smallbox">
+				<img src="images/3.jpg">
+				<div class="txt">
+					<span>Name</span>
+					<span>Location</span>
+					<span>Time</span>
+					<span class="s2">Description</span>
+				</div>
+			</div>
+			<div class="smallbox">
+				<img src="images/3.jpg">
+				<div class="txt">
+					<span>Name</span>
+					<span>Location</span>
+					<span>Time</span>
+					<span class="s2">Description</span>
+				</div>
+			</div>
+			<div class="smallbox">
+				<img src="images/3.jpg">
+				<div class="txt">
+					<span>Name</span>
+					<span>Location</span>
+					<span>Time</span>
+					<span class="s2">Description</span>
+				</div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<h3 class="tit">
+			<span>Pick up</span>
+		</h3>
+		<div class="content">
+			<div class="smallbox">
+				<img src="images/4.jpg">
+				<div class="txt">
+					<span>Name</span>
+					<span>Location</span>
+					<span>Time</span>
+					<span class="s2">Description</span>
+				</div>
+			</div>
+			<div class="smallbox">
+				<img src="images/4.jpg">
+				<div class="txt">
+					<span>Name</span>
+					<span>Location</span>
+					<span>Time</span>
+					<span class="s2">Description</span>
+				</div>
+			</div>
+			<div class="clear"></div>
+		</div>-->
+		</div>
+	</div>
+	<script>
+		$(document).ready(function () {
+			$(".w100").css("width", "100%");
+			$(".aside").css("left", "-230px");
+			$(".keybtn").find('.fa').attr('class', "fa fa-chevron-right");
+
+			var onoff = true;
+			$(".keybtn").click(function () {
+				if (onoff) {
+					onoff = !onoff
+					$(".aside").animate({ left: '0px' });
+					$(this).find('.fa').attr('class', "fa fa-chevron-left");
+					$(".w100").css("width", "calc(100vw - 230px)");
+				} else {
+					onoff = !onoff
+					$(".aside").animate({ left: '-230px' });
+					$(this).find('.fa').attr('class', "fa fa-chevron-right");
+					$(".w100").css("width", "100vw");
+				}
+			});
+			$(".ic1").hover(function () {
+				$(this).find(".subMenu").css("display", "block");
+			}, function () {
+				$(this).find(".subMenu").css("display", "none");
+			});
+		});
+	</script>
+</body>
+
+</html>
