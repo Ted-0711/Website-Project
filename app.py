@@ -85,9 +85,7 @@ def convert_location_to_xy(location):
 def get_distance(lost_thing, pick_thing):
     lost_locations = convert_location_to_xy(lost_thing.location)
     pick_location = convert_location_to_xy(pick_thing.location)[0]
-    min_distance = 20
-    app.logger.info(lost_locations)
-    app.logger.info(pick_location)
+    min_distance = 30
     for lost_location in lost_locations:
         distance = math.sqrt((float(lost_location[0]) - float(pick_location[0])) ** 2 + (float(lost_location[1]) - float(pick_location[1])) ** 2)
         min_distance = distance if distance < min_distance else min_distance
@@ -321,14 +319,16 @@ def lost():
             status=0,
             lostStudent_id=session['login_user']
         )
+        db.session.add(lost_thing)
         for pick_thing in PickThing.query.filter_by(type=lost_thing.type).filter(PickThing.status.in_([0, 1])):
-            if (get_distance(lost_thing, pick_thing) <= 10):
+            if (get_distance(lost_thing, pick_thing) <= 20):
                 lost_thing.status = 1
                 pick_thing.status = 1
                 lost_thing.match_pick_things.append(pick_thing)
-                pick_thing.match_lost_things.append(lost_thing)
-        db.session.add(lost_thing)
+                db.session.commit()
         db.session.commit()
+        for thing in lost_thing.match_pick_things:
+            app.logger.info(thing.name)
         return redirect(url_for('index'))
     return render_template('lost.html',
                            student=student,
@@ -371,14 +371,19 @@ def found():
             status=0,
             pickStudent_id=session['login_user']
         )
+        db.session.add(pick_thing)
         for lost_thing in LostThing.query.filter_by(type=pick_thing.type).filter(LostThing.status.in_([0, 1])):
-            if (get_distance(lost_thing, pick_thing) <= 15):
+            app.logger.info('ist')
+            if (get_distance(lost_thing, pick_thing) <= 20):
+                app.logger.info('was')
                 lost_thing.status = 1
                 pick_thing.status = 1
-                lost_thing.match_pick_things.append(pick_thing)
                 pick_thing.match_lost_things.append(lost_thing)
-        db.session.add(pick_thing)
+                db.session.commit()
+                # lost_thing.match_pick_things.append(pick_thing)
         db.session.commit()
+        for thing in pick_thing.match_lost_things:
+            app.logger.info(thing.name)
         return redirect(url_for('index'))
     return render_template('found.html',
                            student=student,
@@ -413,9 +418,20 @@ def match_things_found(lost_thing_id, pick_thing_id):
     lost_thing = LostThing.query.filter_by(id=lost_thing_id).first()
     pick_thing = PickThing.query.filter_by(id=pick_thing_id).first()
     lost_thing.status = pick_thing.status = 2
+    app.logger.info('lost')
+    m_pick_things = [thing for thing in lost_thing.match_pick_things]
+    m_lost_things = [thing for thing in pick_thing.match_lost_things]
+    for other_pick_thing in m_pick_things:
+        if other_pick_thing.id != pick_thing.id:
+            lost_thing.match_pick_things.remove(other_pick_thing)
+            if len(other_pick_thing.match_lost_things) == 0:
+                other_pick_thing.status = 0
+    for other_lost_thing in m_lost_things:
+        if other_lost_thing.id != lost_thing.id:
+            pick_thing.match_lost_things.remove(other_lost_thing)
+            if len(other_lost_thing.match_pick_things) == 0:
+                other_lost_thing.status = 0
     db.session.commit()
-    app.logger.info(lost_thing.status)
-    app.logger.info(pick_thing.status)
     return redirect_back()
 
 
@@ -433,7 +449,8 @@ def drop_lost_thing(id):
     if (lost_thing):
         student = Student.query.get(lost_thing.lostStudent_id)
         student.lostThings.remove(lost_thing)
-        for pick_thing in lost_thing.match_pick_things:
+        m_pick_things = [thing for thing in lost_thing.match_pick_things]
+        for pick_thing in m_pick_things:
             pick_thing.match_lost_things.remove(lost_thing)
         db.session.delete(lost_thing)
         db.session.commit()
@@ -449,7 +466,8 @@ def drop_pick_thing(id):
     if (pick_thing):
         student = Student.query.get(pick_thing.pickStudent_id)
         student.pickThings.remove(pick_thing)
-        for lost_thing in pick_thing.match_lost_things:
+        m_lost_things = [thing for thing in pick_thing.match_lost_things]
+        for lost_thing in m_lost_things:
             lost_thing.match_pick_things.remove(pick_thing)
         db.session.delete(pick_thing)
         db.session.commit()

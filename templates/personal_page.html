@@ -160,9 +160,9 @@
 									</button>
 									{% elif lost_thing.status == 2 %}
 									<button class="btn btn-success"
-											type="button"
+											id="lost_thing{{ lost_thing.id }}"
 											data-toggle="popover"
-											data-content="It would be my honor if I could help you">
+											data-content="Look down for more information">
 										Found
 									</button>
 									{% endif %}
@@ -183,6 +183,25 @@
 												That's it!
 											</button>
 											</a>
+										</td>
+									</tr>
+								{% endfor %}
+							{% elif lost_thing.status == 2 %}
+								{% for pick_thing in lost_thing.match_pick_things %}
+									<tr class="match_pick_things{{ lost_thing.id }}" style="display: none;">
+										<td>{{ convert_type(pick_thing.type) }}</td>
+										<td>{{ pick_thing.name }}</td>
+										<td>{{ convert_location_to_txt(pick_thing.location) }}</td>
+										<td>{{ pick_thing.contactPerson }}</td>
+										<td>{{ pick_thing.contactEmail }}</td>
+										<td>{{ pick_thing.complement }}</td>
+										<td>
+											<button class="btn btn-secondary"
+													type="button"
+													data-toggle="popover"
+													data-content="It would be my honor if I could help you">
+												Found
+											</button>
 										</td>
 									</tr>
 								{% endfor %}
@@ -234,9 +253,9 @@
 									</button>
 									{% elif pick_thing.status == 2 %}
 									<button class="btn btn-success"
-											type="button"
+											id="pick_thing{{ pick_thing.id }}"
 											data-toggle="popover"
-											data-content="It would be my honor if I could help you">
+											data-content="Look down for more information">
 										Found
 									</button>
 									{% endif %}
@@ -257,6 +276,25 @@
 												That's it!
 											</button>
 											</a>
+										</td>
+									</tr>
+								{% endfor %}
+							{% elif pick_thing.status == 2 %}
+								{% for lost_thing in pick_thing.match_lost_things %}
+									<tr class="match_lost_things{{ pick_thing.id }}" style="display: none;">
+										<td>{{ convert_type(lost_thing.type) }}</td>
+										<td>{{ lost_thing.name }}</td>
+										<td>{{ convert_location_to_txt(lost_thing.location) }}</td>
+										<td>{{ lost_thing.contactPerson }}</td>
+										<td>{{ lost_thing.contactEmail }}</td>
+										<td>{{ lost_thing.complement }}</td>
+										<td>
+											<button class="btn btn-secondary"
+													type="button"
+													data-toggle="popover"
+													data-content="It would be my honor if I could help you">
+												Found
+											</button>
 										</td>
 									</tr>
 								{% endfor %}
