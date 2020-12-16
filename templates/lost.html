@@ -249,6 +249,8 @@
                                 return
                             }
                             count.push(rs.surroundingPois[0].title)
+                            single.push(pt.lng)
+                            single.push(pt.lat)
                             console.log(count.join(","))
                             $("#lostLocation").val(count.join(","))
                         }
@@ -302,13 +304,13 @@
         </div>
         <br />
         <div class="form-group m-0">
-            <button type="submit" class="btn btn-info btn-lg btn-block" role="'button">
+            <button type="submit" class="btn btn-info btn-lg btn-block" role="button">
                 Submit
             </button>
         </div>
         <br>
 <!--            <a href="#" class="btn btn-info btn-lg btn-block" role="button">Submit</a>-->
-        <button class="btn btn-info btn-lg btn-block" onclick="clearOverlays()">Clear All</button>
+        <button type="button" class="btn btn-info btn-lg btn-block" onclick="clearOverlays()">Clear All</button>
         <br>
         <br>
     </form>
