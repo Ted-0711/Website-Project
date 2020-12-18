@@ -248,7 +248,10 @@
                                 $("#foundLocation").val(count.join(","))
                                 return
                             }
-                            count.push(rs.surroundingPois[0].title)
+                            single.push(rs.surroundingPois[0].title)
+                            single.push(pt.lng)
+                            single.push(pt.lat)
+                            count.push(single.join("-"))
                             console.log(count.join(","))
                             $("#foundLocation").val(count.join(","))
                         }
