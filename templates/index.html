@@ -9,7 +9,7 @@
 	</style>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Rectangle Mobile Template</title>
+	<title>Lost & Found HomePage</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../static/css/normalize.css">
@@ -200,65 +200,70 @@
 		box-shadow: 0 0 15px rgba(8, 114, 31, 0.911);
 	}
 
-	.topside{
-		background:rgba(0,0,0,0.7);
-		height:50px;
-		width:100%;
-		position:fixed;
-		top:0px;
-		z-index:2;
-	}
-	.iconbox{
-		width:100px;
-		height:30px;
-		float:right;
-		text-align:center;
-		line-height:50px;
-		color:#fff;
-		font-size:24px;
-		position:relative;
-		margin-top: -5px;
-	}
-	.badge{
-		padding: 1px 2px;
-		border-radius: 50%;
-		background: #d00;
-		position: absolute;
-		top: 14px;
-		left: 23px;
-		font-size: 3px;
-	}
-	.subMenu{
-		width: 150px;
-		position: absolute;
-		top: 37px;
-		right: -60px;
-		line-height: 30px;
-		font-size: 16px;
-		background: #fff;
-		display: none;
-		text-align: left;
-		padding-left: 10px;
-	}
-	.subMenu li{
-		list-style:none;
-		line-height:30px;
-		font-size:14px;
-	}
-	.subMenu li a{
-		color:#000;
-		text-decoration:none;
-	}
-	.subMenu li i{
-		margin-right:10px;
-		line-height:30px;
-	}
-	.mr30{
-		margin-right:140px;
-	}
-	.ic2 a{
-		color:white;
-	}
+        .topside{
+            background:rgba(0,0,0,0.7);
+            height:50px;
+            width:100%;
+            position:fixed;
+            top:0px;
+            z-index:100;
+        }
+        .iconbox{
+            width:100px;
+            height:60px;
+            float:right;
+            text-align:center;
+            line-height:50px;
+            color:#fff;
+            font-size:24px;
+            position:relative;
+            margin-top: -5px;
+			z-index: 101;
+        }
+        .badge{
+            padding: 1px 2px;
+            border-radius: 50%;
+            background: #d00;
+            position: absolute;
+            top: 14px;
+            left: 23px;
+            font-size: 3px;
+        }
+        .subMenu{
+            width: 110px;
+            position: absolute;
+            top: 54px;
+            right: -20px;
+            line-height: 30px;
+            font-size: 16px;
+            background:rgba(0,0,0,0.7);
+            display: none;
+            text-align: left;
+            padding-left: 10px;
+            border-radius: 10%;
+        }
+        .subMenu li{
+            list-style:none;
+            line-height:30px;
+            font-size:14px;
+        }
+        .subMenu li a{
+            color:white;
+            text-decoration:none;
+        }
+        .subMenu li i{
+            margin-right:10px;
+            line-height:30px;
+        }
+        .mr30{
+            margin-right:140px;
+        }
+        .ic2 a{
+            color:white;
+        }
+        .container{
+            margin-top: 50px;
+        }
 </style>
 </head>
 <body>
@@ -290,54 +295,54 @@
 <div id="pages" data-lost_pages="{{ lost_pages }}" data-pick_pages="{{ pick_pages }}"></div>
 
 
-<div class="topside">
-	<div class="iconbox ic1 mr30"><i class="fa fa-user" aria-hidden="true" style="font-size: 15px;"> User</i>
-		<div class="subMenu">
-			<ul class="sub1">
-				<li><A href="{{ url_for('personal_page') }}"><i class="fa fa-credit-card"></i> User</A></li>
-				<li><A href="{{ url_for('log_out') }}"><i class="fa fa-sign-out"></i>Sign Out</A></li>
-			</ul>
-		</div>
-	</div>
-	<div class="iconbox ic2"><A href="{{ url_for('personal_page') }}"><i class="fa fa-bell" style="font-size: 15px;"> Notice</i><span
-			class="badge pull-right">{{ notice_num }}</span></A></div>
+ <div class="topside">
+        <div class="iconbox ic1 mr30" id="icon1"><i class="fa fa-user" aria-hidden="true" style="font-size: 15px;"> User</i>
+            <div class="subMenu menu1" id="m1" style="padding-top: 10px; padding-bottom: 10px">
+                <ul class="sub1" style="padding-left: 5px">
+                    <li><A href="{{ url_for('personal_page') }}"><i class="fa fa-credit-card"></i> User</A></li>
+                    <li><A href="{{ url_for('log_out') }}"><i class="fa fa-sign-out"></i>Sign Out</A></li>
+                </ul>
+            </div>
+        </div>
+        <div class="iconbox ic2"><A href="{{ url_for('personal_page') }}"><i class="fa fa-bell" style="font-size: 15px;"> Notice</i><span
+                class="badge pull-right">{{ notice_num }}</span></A></div>
 
-	<div class="iconbox ic1"><i class="fa fa-plus" style="font-size: 15px;"> Add</i>
-		<div class="subMenu">
-			<ul class="sub2">
-				<li><A href="{{ url_for('lost') }}"><i class="fa fa-plus"></i>Add Lost</A></li>
-				<li><A href="{{ url_for('found') }}"><i class="fa fa-plus"></i>Add Found</A></li>
-			</ul>
-		</div>
-	</div>
+        <div class="iconbox ic1 mr20" id="icon2" ><i class="fa fa-plus" style="font-size: 15px;"> Add</i>
+            <div class="subMenu menu2" id="m2" style="padding-top: 10px; padding-bottom: 10px">
+                <ul class="sub2" style="padding-left: 5px">
+                    <li><A href="{{ url_for('lost') }}"><i class="fa fa-plus"></i>Add Lost</A></li>
+                    <li><A href="{{ url_for('found') }}"><i class="fa fa-plus"></i>Add Found</A></li>
+                </ul>
+            </div>
+        </div>
 
-	<div class="iconbox ic2"><A href="{{ url_for('index') }}"><i class="fa fa-home" style="font-size: 15px;">HomePage</i></A></div>
-</div>
+        <div class="iconbox ic2"><A href="{{ url_for('index') }}"><i class="fa fa-home" style="font-size: 15px;">HomePage</i></A></div>
+    </div>
 
 
-<div class="visible-xs visible-sm responsive-menu">
-	<a href="#" class="toggle-menu">
-		<i class="fa fa-bars"></i> Show Menu
-	</a>
-	<div class="show-menu">
-		<ul class="main-menu">
-			<li>
-				<a class="show-1 active homebutton" href="#"><i class="fa fa-home"></i>Home</a>
-			</li>
-			<li>
-				<a class="show-2 aboutbutton" href="#"><i class="fa fa-map"></i>Hotspot map</a>
-			</li>
-			<li>
-				<a class="show-3 projectbutton" href="#"><i class="fa fa-id-card"></i>Lost Things</a>
-			</li>
-			<li>
-				<a class="show-5 contactbutton" href="#"><i class="fa fa-question"></i>Picked Things</a>
-			</li>
-		</ul>
-	</div>
-</div>
+<!--<div class="visible-xs visible-sm responsive-menu">-->
+<!--	<a href="#" class="toggle-menu">-->
+<!--		<i class="fa fa-bars"></i> Show Menu-->
+<!--	</a>-->
+<!--	<div class="show-menu">-->
+<!--		<ul class="main-menu">-->
+<!--			<li>-->
+<!--				<a class="show-1 active homebutton" href="#"><i class="fa fa-home"></i>Home</a>-->
+<!--			</li>-->
+<!--			<li>-->
+<!--				<a class="show-2 aboutbutton" href="#"><i class="fa fa-map"></i>Hotspot map</a>-->
+<!--			</li>-->
+<!--			<li>-->
+<!--				<a class="show-3 projectbutton" href="#"><i class="fa fa-id-card"></i>Lost Things</a>-->
+<!--			</li>-->
+<!--			<li>-->
+<!--				<a class="show-5 contactbutton" href="#"><i class="fa fa-question"></i>Picked Things</a>-->
+<!--			</li>-->
+<!--		</ul>-->
+<!--	</div>-->
+<!--</div>-->
 
-<div class="container" id="page-content">
+<div class="container" id="page-content" style="margin-top: 150px;">
 	<div class="row">
 
 		<div class="col-md-9 col-sm-12 content-holder">
@@ -351,8 +356,8 @@
 
 				<div id="menu-1" class="homepage home-section text-center">
 					<div class="welcome-text">
-						<h2>Hello <strong>{{ student.name }}</strong>, Welcome to <strong>Lost & Found</strong></h2>
-						<h2>Your Contact Email is <strong>{{ student.emailAddress }}</strong></h2>
+						<h2 style="text-align: left;text-align: left;font-family: -webkit-pictograph;font-size: 38px;">Hello <i class="fa fa-graduation-cap"></i><strong>{{ student.name }}</strong>,</h2>
+						<h2 style="font-size: 60px;font-family: auto;">Welcome to <strong>Lost & Found</strong></h2>						<h2>Your Contact Email is <strong>{{ student.emailAddress }}</strong></h2>
 						<p> You can report the loss and look for your lost property here. Or return something you found to its owner.</p>
 					</div>
 				</div>
@@ -511,7 +516,25 @@
 										<tbody class="text-center">
 											{% for lost_thing in all_not_found_lost_things[i*num_per_page:(i+1)*num_per_page] %}
 											<tr>
-												<td> {{ convert_type(lost_thing.type) }} </td>
+												<td>
+													<i class="fa fa-
+													{% if lost_thing.type == 1 %}
+													fa-id-card-o
+													{% elif lost_thing.type == 2 %}
+													fa-mobile-phone
+													{% elif lost_thing.type == 3 %}
+													fa-diamond
+													{% elif lost_thing.type == 4 %}
+													fa-shopping-bag
+													{% elif lost_thing.type == 5 %}
+													fa-black-tie
+													{% elif lost_thing.type == 6 %}
+													fa-book
+													{% endif %}
+														">
+													</i>
+													{{ convert_type(lost_thing.type) }}
+												</td>
 												<td> {{ lost_thing.name }} </td>
 												<td> {{ convert_location_to_txt(lost_thing.location) }} </td>
 												<td> {{ lost_thing.contactEmail }} </td>
@@ -553,7 +576,25 @@
 										<tbody class="text-center">
 											{% for pick_thing in all_not_found_pick_things[i*num_per_page:(i+1)*num_per_page] %}
 											<tr>
-												<td> {{ convert_type(pick_thing.type) }} </td>
+												<td>
+													<i class="fa fa-
+													{% if pick_thing.type == 1 %}
+													fa-id-card-o
+													{% elif pick_thing.type == 2 %}
+													fa-mobile-phone
+													{% elif pick_thing.type == 3 %}
+													fa-diamond
+													{% elif pick_thing.type == 4 %}
+													fa-shopping-bag
+													{% elif pick_thing.type == 5 %}
+													fa-black-tie
+													{% elif pick_thing.type == 6 %}
+													fa-book
+													{% endif %}
+														">
+													</i>
+													{{ convert_type(pick_thing.type) }}
+												</td>
 												<td> {{ pick_thing.name }} </td>
 												<td> {{ convert_location_to_txt(pick_thing.location) }} </td>
 												<td> {{ pick_thing.contactEmail }} </td>
@@ -684,10 +725,10 @@
 
 <!-- SITE-FOOTER -->
 <div class="site-footer">
-	<div class="container">
-		<div class="row">
+	<div class="container" style="margin: auto">
+		<div class="row" style="top: 50%; left: 50%;">
 			<div class="col-md-12 text-center">
-				<p class="phone-info">Call us: Lost&Found@tongji.edu.cn </p>
+				<p class="phone-info">Call us: 1853769@tongji.edu.cn </p>
 			</div>
 		</div>
 	</div>
@@ -713,17 +754,36 @@
 				$(".w100").css("width", "100vw");
 			}
 		});
-		$(".ic1").hover(function () {
+		/*$(".ic1").hover(function () {
 			$(this).find(".subMenu").css("display", "block");
 		}, function () {
 			$(this).find(".subMenu").css("display", "none");
-		});
+		});*/
 	});
 </script>
 <script type="text/javascript">
 	$(function () {
 	  $('[data-toggle="popover"]').popover()
 	})
+        window.onload=function(){
+            function $(id){
+              return document.getElementById(id);
+            }
+            $("icon1").onmouseover=function(){
+              // this.style.display="none";
+              $("m1").style.display="block"
+            }
+            $("icon1").onmouseout=function(){
+              $("m1").style.display="none"
+            }
+            $("icon2").onmouseover=function(){
+              // this.style.display="none";
+              $("m2").style.display="block"
+            }
+            $("icon2").onmouseout=function(){
+              $("m2").style.display="none"
+            }
+        }
 </script>
 <script src="../static/js/vendor/jquery-1.10.2.min.js"></script>
 <script src="../static/js/plugins.js"></script>

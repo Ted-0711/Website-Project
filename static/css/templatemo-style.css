@@ -395,19 +395,19 @@ h1, h2, h3, h4, h5 {
 }
 
 .homebutton {
-  background: #207d59;
+  background-color: rgba(92,159,175,0.85);
 }
 
 .aboutbutton {
-  background: #3b5b8e;
+  background-color: rgba(59, 91, 129,0.85);
 }
 
 .projectbutton {
-  background: #5c9faf;
+  background-color: rgba(61, 109, 51,0.85);
 }
 
 .contactbutton {
-  background: #b85b53;
+  background-color: rgba(184,91,83,0.85);
 }
 
 .logo-top-margin {

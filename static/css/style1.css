@@ -86,9 +86,15 @@ body{
 	top:0px;
 	z-index:2;
 }
+.mr30:hover .menu1{
+	display: block;
+}
+.mr20:hover .menu2{
+	display: block;
+}
 .iconbox{
 	width:100px;
-	height:30px;
+	height:60px;
 	float:right;
 	text-align:center;
 	line-height:50px;
@@ -107,16 +113,17 @@ body{
     font-size: 3px;
 }
 .subMenu{
-    width: 150px;
+    width: 110px;
     position: absolute;
-    top: 37px;
-    right: -60px;
+    top: 54px;
+    right: -20px;
     line-height: 30px;
     font-size: 16px;
-    background: #fff;
+    background: rgba(0,0,0,0.7);
     display: none;
     text-align: left;
     padding-left: 10px;
+	border-radius: 10%;
 }
 .subMenu li{
 	list-style:none;
@@ -124,7 +131,7 @@ body{
 	font-size:14px;
 }
 .subMenu li a{
-	color:#000;
+	color:white;
 	text-decoration:none;
 }
 .subMenu li i{

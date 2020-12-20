@@ -105,11 +105,23 @@ def get_notice_num(student):
     return notice_num
 
 
-def redirect_back(default='index', **kwargs):
+def redirect_back(default='index', return_id='', **kwargs):
     for target in request.args.get('next'), request.referrer:
         if target:
+            if return_id:
+                target += '#' + return_id
             return redirect(target)
     return redirect(default, **kwargs)
+
+
+def check_date(lost_thing, pick_thing):
+    if (lost_thing.lostDate and pick_thing.pickDate):
+        return (lost_thing.lostDate.year <= pick_thing.pickDate.year or
+                (lost_thing.lostDate.month <= pick_thing.pickDate.month and lost_thing.lostDate.year == pick_thing.pickDate.year)
+                or (lost_thing.lostDate.year == pick_thing.pickDate.year and lost_thing.lostDate.month == pick_thing.pickDate.month
+                    and lost_thing.lostDate.day <= pick_thing.pickDate.day))
+    else:
+        return 1
 
 
 # database
@@ -144,6 +156,7 @@ class LostThing(db.Model):
     match_pick_things = db.relationship('PickThing',
                                    secondary=match_table,
                                    back_populates='match_lost_things')
+    confirm_pick_thing_id = db.Column(db.Integer)
 
     def __repr__(self):
         return '<LostThing %r>' % self.id
@@ -164,6 +177,7 @@ class PickThing(db.Model):
     match_lost_things = db.relationship('LostThing',
                                         secondary=match_table,
                                         back_populates='match_pick_things')
+    confirm_lost_thing_id = db.Column(db.Integer)
 
     def __repr__(self):
         return '<PickThing %r>' % self.id
@@ -189,7 +203,7 @@ def index():
         return redirect(url_for('login'))
     student = Student.query.get(session['login_user'])
     notice_num = get_notice_num(student)
-    num_per_page = 10
+    num_per_page = 8
     all_lost_things = LostThing.query.all()
     all_not_found_lost_things = LostThing.query.filter(LostThing.status.in_([0, 1])).all()
     all_pick_things = PickThing.query.all()
@@ -321,7 +335,9 @@ def lost():
         )
         db.session.add(lost_thing)
         for pick_thing in PickThing.query.filter_by(type=lost_thing.type).filter(PickThing.status.in_([0, 1])):
-            if (get_distance(lost_thing, pick_thing) <= 20):
+            app.logger.info(pick_thing)
+            if (get_distance(lost_thing, pick_thing) <= 25 and check_date(lost_thing, pick_thing)):
+                app.logger.info(pick_thing)
                 lost_thing.status = 1
                 pick_thing.status = 1
                 lost_thing.match_pick_things.append(pick_thing)
@@ -374,7 +390,7 @@ def found():
         db.session.add(pick_thing)
         for lost_thing in LostThing.query.filter_by(type=pick_thing.type).filter(LostThing.status.in_([0, 1])):
             app.logger.info('ist')
-            if (get_distance(lost_thing, pick_thing) <= 20):
+            if (get_distance(lost_thing, pick_thing) <= 25 and check_date(lost_thing, pick_thing)):
                 app.logger.info('was')
                 lost_thing.status = 1
                 pick_thing.status = 1
@@ -405,7 +421,8 @@ def personal_page():
                            personal_lost_things=personal_lost_things,
                            personal_pick_things=personal_pick_things,
                            convert_type=convert_type,
-                           convert_location_to_txt=convert_location_to_txt)
+                           convert_location_to_txt=convert_location_to_txt,
+                           str=str)
 
 
 @app.route('/Terms_and_Conditions')
@@ -413,8 +430,8 @@ def Terms_and_Conditions():
     return '<h1>Surprise!</h1>'
 
 
-@app.route('/match_things_found/<lost_thing_id><pick_thing_id>')
-def match_things_found(lost_thing_id, pick_thing_id):
+@app.route('/match_things_found/<lost_thing_id>/<pick_thing_id>/<return_id>')
+def match_things_found(lost_thing_id, pick_thing_id, return_id):
     lost_thing = LostThing.query.filter_by(id=lost_thing_id).first()
     pick_thing = PickThing.query.filter_by(id=pick_thing_id).first()
     lost_thing.status = pick_thing.status = 2
@@ -432,7 +449,7 @@ def match_things_found(lost_thing_id, pick_thing_id):
             if len(other_lost_thing.match_pick_things) == 0:
                 other_lost_thing.status = 0
     db.session.commit()
-    return redirect_back()
+    return redirect_back(return_id=return_id)
 
 
 @app.route('/log_out')
@@ -452,10 +469,12 @@ def drop_lost_thing(id):
         m_pick_things = [thing for thing in lost_thing.match_pick_things]
         for pick_thing in m_pick_things:
             pick_thing.match_lost_things.remove(lost_thing)
+            if len(pick_thing.match_lost_things) == 0:
+                pick_thing.status = 0
         db.session.delete(lost_thing)
         db.session.commit()
         app.logger.info('delete success')
-    return redirect(url_for('index'))
+    return redirect_back(return_id='A1')
 
 
 @app.route('/drop_pick_thing/<id>')
@@ -469,10 +488,47 @@ def drop_pick_thing(id):
         m_lost_things = [thing for thing in pick_thing.match_lost_things]
         for lost_thing in m_lost_things:
             lost_thing.match_pick_things.remove(pick_thing)
+            if len(lost_thing.match_pick_things) == 0:
+                lost_thing.status = 0
         db.session.delete(pick_thing)
         db.session.commit()
         app.logger.info('delete success')
-    return redirect(url_for('index'))
+    return redirect_back(return_id='A2')
+
+
+@app.route('/remove_match_thing/<lost_thing_id>/<pick_thing_id>/<return_id>')
+def remove_match_thing(lost_thing_id, pick_thing_id, return_id):
+    lost_thing = LostThing.query.get(lost_thing_id)
+    pick_thing = PickThing.query.get(pick_thing_id)
+    if (lost_thing.confirm_pick_thing_id == pick_thing_id):
+        lost_thing.confirm_pick_thing_id = None
+    if (pick_thing.confirm_lost_thing_id == lost_thing_id):
+        pick_thing.confirm_lost_thing_id = None
+    lost_thing.match_pick_things.remove(pick_thing)
+    if len(lost_thing.match_pick_things) == 0:
+        lost_thing.status = 0
+    if len(pick_thing.match_lost_things) == 0:
+        pick_thing.status = 0
+    db.session.commit()
+    return redirect_back(return_id=return_id)
+
+
+@app.route('/confirm_pick_thing/<lost_thing_id>/<pick_thing_id>/<return_id>')
+def confirm_pick_thing(lost_thing_id, pick_thing_id, return_id):
+    app.logger.info(lost_thing_id, pick_thing_id)
+    lost_thing = LostThing.query.get(lost_thing_id)
+    lost_thing.confirm_pick_thing_id = pick_thing_id
+    db.session.commit()
+    return redirect_back(return_id=return_id)
+
+
+@app.route('/confirm_lost_thing/<lost_thing_id>/<pick_thing_id>/<return_id>')
+def confirm_lost_thing(lost_thing_id, pick_thing_id, return_id):
+    app.logger.info(lost_thing_id, pick_thing_id)
+    pick_thing = PickThing.query.get(pick_thing_id)
+    pick_thing.confirm_lost_thing_id = lost_thing_id
+    db.session.commit()
+    return redirect_back(return_id=return_id)
 
 
 def checkRememberAndPop():

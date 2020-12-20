@@ -128,8 +128,8 @@ class FoundForm(FlaskForm):
         )
     foundLocation = StringField(
         'place',
-        validators=[DataRequired(message=u'Lost location is required')],
-        render_kw={'class': 'form-control', 'placeholder': 'Please click the lost location in the map', 'readonly': 'readonly'}
+        validators=[DataRequired(message=u'Found location is required')],
+        render_kw={'class': 'form-control', 'placeholder': 'Please click the found location in the map', 'readonly': 'readonly'}
     )
     complement = TextAreaField(
         'Complement (optional)',

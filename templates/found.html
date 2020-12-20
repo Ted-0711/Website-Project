@@ -16,8 +16,16 @@
     <link rel="stylesheet" href="../static/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="../static/css/my-login.css">
     <link rel="stylesheet" href="../static/css/font-awesome.css">
+<!--    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>-->
+<!--    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>-->
     <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
     <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="js/jquery-1.10.2.js"></script>
+    <script src="js/jquery-browser.js"></script>
+    <script src="js/jquery.imageView.js"></script>
+    <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=hjpHex4OdzQGBwiRpGYLmY0uHkNpKKxj"></script>
+    <script type="text/javascript"
+        src="http://api.map.baidu.com/library/AreaRestriction/1.2/src/AreaRestriction_min.js"></script>
     <style type="text/css">
         .BMap_geolocationIconBackground {
             display: none;
@@ -34,9 +42,15 @@
             top:0px;
             z-index:2;
         }
+        .mr30:hover .menu1{
+	    display: block;
+        }
+        .mr20:hover .menu2{
+        display: block;
+        }
         .iconbox{
             width:100px;
-            height:30px;
+            height:60px;
             float:right;
             text-align:center;
             line-height:50px;
@@ -55,16 +69,17 @@
             font-size: 3px;
         }
         .subMenu{
-            width: 150px;
+            width: 110px;
             position: absolute;
-            top: 37px;
-            right: -60px;
+            top: 54px;
+            right: -20px;
             line-height: 30px;
             font-size: 16px;
-            background: #fff;
+            background:rgba(0,0,0,0.7);
             display: none;
             text-align: left;
             padding-left: 10px;
+            border-radius: 10%;
         }
         .subMenu li{
             list-style:none;
@@ -72,7 +87,7 @@
             font-size:14px;
         }
         .subMenu li a{
-            color:#000;
+            color:white;
             text-decoration:none;
         }
         .subMenu li i{
@@ -89,19 +104,13 @@
             margin-top: 50px;
         }
     </style>
-    <script src="js/jquery-1.10.2.js"></script>
-    <script src="js/jquery-browser.js"></script>
-    <script src="js/jquery.imageView.js"></script>
-    <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=hjpHex4OdzQGBwiRpGYLmY0uHkNpKKxj"></script>
-    <script type="text/javascript"
-        src="http://api.map.baidu.com/library/AreaRestriction/1.2/src/AreaRestriction_min.js"></script>
 </head>
 
 <body>
     <div class="topside">
         <div class="iconbox ic1 mr30"><i class="fa fa-user" aria-hidden="true" style="font-size: 15px;"> User</i>
-            <div class="subMenu">
-                <ul class="sub1">
+            <div class="subMenu menu1" style="padding-top: 10px">
+                <ul class="sub1" style="padding-left: 5px">
                     <li><A href="{{ url_for('personal_page') }}"><i class="fa fa-credit-card"></i> User</A></li>
                     <li><A href="{{ url_for('log_out') }}"><i class="fa fa-sign-out"></i>Sign Out</A></li>
                 </ul>
@@ -110,9 +119,9 @@
         <div class="iconbox ic2"><A href="{{ url_for('personal_page') }}"><i class="fa fa-bell" style="font-size: 15px;"> Notice</i><span
                 class="badge pull-right">{{ notice_num }}</span></A></div>
 
-        <div class="iconbox ic1"><i class="fa fa-plus" style="font-size: 15px;"> Add</i>
-            <div class="subMenu">
-                <ul class="sub2">
+        <div class="iconbox ic1 mr20"><i class="fa fa-plus" style="font-size: 15px;"> Add</i>
+            <div class="subMenu menu2" style="padding-top: 10px">
+                <ul class="sub2" style="padding-left: 5px">
                     <li><A href="{{ url_for('lost') }}"><i class="fa fa-plus"></i>Add Lost</A></li>
                     <li><A href="{{ url_for('found') }}"><i class="fa fa-plus"></i>Add Found</A></li>
                 </ul>
@@ -121,7 +130,7 @@
 
         <div class="iconbox ic2"><A href="{{ url_for('index') }}"><i class="fa fa-home" style="font-size: 15px;">HomePage</i></A></div>
     </div>
-    <div class="container">
+    <div class="container" style="background-color: white">
         <form method="POST" novalidate="">
         {{ form.csrf_token }}
         <br>
@@ -249,8 +258,8 @@
                                 return
                             }
                             single.push(rs.surroundingPois[0].title)
-                            single.push(pt.lng)
-                            single.push(pt.lat)
+                            single.push(rs.surroundingPois[1].point.lng)
+                            single.push(rs.surroundingPois[1].point.lat)
                             count.push(single.join("-"))
                             console.log(count.join(","))
                             $("#foundLocation").val(count.join(","))
@@ -289,10 +298,6 @@
                     });
                 }
 
-                $(document).on("click", ".remove", function () {
-                    map.clearOverlays()
-                    $("#foundLocation").val("")
-                })
                 function clearOverlays(){
                     map.clearOverlays()
                 }
@@ -311,7 +316,7 @@
         </div>
         <br>
 <!--            <a href="#" class="btn btn-info btn-lg btn-block" role="button">Submit</a>-->
-        <button class="btn btn-info btn-lg btn-block" onclick="clearOverlays()">
+        <button type="button" id="ClearAll" class="btn btn-info btn-lg btn-block">
             Clear All
         </button>
         <br>
@@ -346,6 +351,11 @@
 			$(this).find(".subMenu").css("display", "none");
 		});
 	});
+	$('#ClearAll').click(function () {
+        map.clearOverlays();
+        $("#foundLocation").val("");
+        count.length = 0;
+    })
 </script>
 
 </html>
